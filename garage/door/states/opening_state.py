@@ -1,3 +1,4 @@
+from threading import Timer
 from ..positions import *
 
 class OpeningState:
@@ -11,9 +12,14 @@ class OpeningState:
             self.door_model.set_new_state("Closed")
 
     def enter(self):
-        # Start timer, after which the door has to be OpenState
-        # If the timer expired, switch to state INTERMEDIATE
-        pass
+        self.timer = Timer(self.door_model.transit_time, self._transit_timeout)
+        self.timer.start()
 
     def exit(self):
-        pass
+        if self.timer:
+            self.timer.cancel()
+            self.timer = False
+
+    def _transit_timeout(self):
+        self.timer = False
+        self.door_model.set_new_state("Intermediate")

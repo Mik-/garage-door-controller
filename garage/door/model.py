@@ -14,7 +14,7 @@ class Door(object):
             self.set_new_state("Error")
         else:
             self.set_new_state("Init")
-        self.tansit_time = transit_time     # time, the door need for opening or closing
+        self.transit_time = transit_time     # time, the door need for opening or closing
         self.trigger_time = trigger_time    # time, the relais will triggered to move door
         signal(SIGNAL_LOWER_SWITCH_CHANGED).connect(self._switch_changed)
         signal(SIGNAL_UPPER_SWITCH_CHANGED).connect(self._switch_changed)

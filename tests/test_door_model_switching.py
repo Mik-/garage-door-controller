@@ -9,14 +9,14 @@ def test_start_opening():
     # Door is closed
     mock_driver = MockDriver()
     mock_driver.lower_limit_switch = True
-    door_model = Door("Test door", mock_driver, 1, 1)
+    door_model = Door("Test door", mock_driver, 1, 0.1)
 
     # trigger move
     door_model.start_door_signal()
 
     assert mock_driver.door_signal == True
 
-    # The lower switch opend
+    # The lower switch opened
     mock_driver.lower_limit_switch = False
     signal(SIGNAL_LOWER_SWITCH_CHANGED).send(mock_driver)
 
@@ -76,3 +76,91 @@ def test_start_closing_timeout():
 
     assert mock_driver.door_signal == False
     assert door_model.state.__class__.__name__ == "OpenState"
+
+def test_opening():
+    # Door is closed
+    mock_driver = MockDriver()
+    door_model = Door("Test door", mock_driver, 0.2, 0.1)
+    door_model.set_new_state('Opening')
+
+    # The upper switch closed
+    mock_driver.upper_limit_switch = True
+    signal(SIGNAL_UPPER_SWITCH_CHANGED).send(mock_driver)
+
+
+    assert door_model.state.__class__.__name__ == "OpenState"
+    time.sleep(0.3)
+    assert door_model.state.__class__.__name__ == "OpenState"
+
+def test_opening_timeout():
+    # Door is closed
+    mock_driver = MockDriver()
+    door_model = Door("Test door", mock_driver, 0.2, 0.1)
+    door_model.set_new_state('Opening')
+
+    # The upper switch will not close before timeout is reached
+    time.sleep(0.3)
+
+    assert door_model.state.__class__.__name__ == "IntermediateState"
+
+def test_closing():
+    # Door is closed
+    mock_driver = MockDriver()
+    door_model = Door("Test door", mock_driver, 0.2, 0.1)
+    door_model.set_new_state('Closing')
+
+    # The lower switch closed
+    mock_driver.lower_limit_switch = True
+    signal(SIGNAL_LOWER_SWITCH_CHANGED).send(mock_driver)
+
+    assert door_model.state.__class__.__name__ == "ClosedState"
+    time.sleep(0.3)
+    assert door_model.state.__class__.__name__ == "ClosedState"
+
+def test_closing_timeout():
+    # Door is closed
+    mock_driver = MockDriver()
+    door_model = Door("Test door", mock_driver, 0.2, 0.1)
+    door_model.set_new_state('Closing')
+
+    # The lower switch will not close before timeout is reached
+    time.sleep(0.3)
+
+    assert door_model.state.__class__.__name__ == "IntermediateState"
+
+def test_intermediate_to_closed():
+    # Door is closed
+    mock_driver = MockDriver()
+    door_model = Door("Test door", mock_driver, 0.2, 0.1)
+    door_model.set_new_state('Intermediate')
+
+    # The lower switch closed
+    mock_driver.lower_limit_switch = True
+    signal(SIGNAL_LOWER_SWITCH_CHANGED).send(mock_driver)
+
+    assert door_model.state.__class__.__name__ == "ClosedState"
+
+def test_intermediate_to_open():
+    # Door is closed
+    mock_driver = MockDriver()
+    door_model = Door("Test door", mock_driver, 0.2, 0.1)
+    door_model.set_new_state('Intermediate')
+
+    # The upper switch closed
+    mock_driver.upper_limit_switch = True
+    signal(SIGNAL_UPPER_SWITCH_CHANGED).send(mock_driver)
+
+    assert door_model.state.__class__.__name__ == "OpenState"
+
+def test_error():
+    # Door is closed
+    mock_driver = MockDriver()
+    door_model = Door("Test door", mock_driver, 0.2, 0.1)
+
+    # Both switches closed
+    mock_driver.upper_limit_switch = True
+    mock_driver.lower_limit_switch = True
+    signal(SIGNAL_UPPER_SWITCH_CHANGED).send(mock_driver)
+    signal(SIGNAL_UPPER_SWITCH_CHANGED).send(mock_driver)
+
+    assert door_model.state.__class__.__name__ == "ErrorState"
