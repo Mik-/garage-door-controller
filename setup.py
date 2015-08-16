@@ -10,7 +10,7 @@ config = {
     'download_url': 'www.neuendorf-online.de',
     'author_email': 'michael@neuendorf-online.de',
     'version': '0.1',
-    'install_requires': ['nose'],
+    'install_requires': ['nose', 'RPi.GPIO', 'blinker'],
     'packages': ['garage'],
     'scripts': [],
     'name': 'garage'
