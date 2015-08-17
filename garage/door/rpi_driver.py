@@ -1,5 +1,6 @@
 from driver import Driver
-from signlas import *
+from blinker import signal
+from signals import *
 
 try:
     import RPi.GPIO as GPIO
@@ -8,7 +9,7 @@ except RuntimeError:
         "superuser privileges.  You can achieve this by using 'sudo' to run " +
         "your script")
 
-class RPiDriver(Driver)
+class RPiDriver(Driver):
     """Implements the Driver interface for the Raspberry Pi."""
 
     def __init__(self, gpioRelais, gpioUpperLimitSwitch, gpioLowerLimitSwitch):
@@ -22,10 +23,8 @@ class RPiDriver(Driver)
         GPIO.setup(self.gpioUpperLimitSwitch, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.gpioLowerLimitSwitch, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-        GPIO.add_event_detected(self.gpioUpperLimitSwitch, GPIO.RISING, callback=self._handle_switch, bouncetime=200)
-        GPIO.add_event_detected(self.gpioUpperLimitSwitch, GPIO.FALLING, callback=self._handle_switch, bouncetime=200)
-        GPIO.add_event_detected(self.gpioLowerLimitSwitch, GPIO.RISING, callback=self._handle_switch, bouncetime=200)
-        GPIO.add_event_detected(self.gpioLowerLimitSwitch, GPIO.FALLING, callback=self._handle_switch, bouncetime=200)
+        GPIO.add_event_detect(self.gpioUpperLimitSwitch, GPIO.BOTH, callback=self._handle_switch, bouncetime=200)
+        GPIO.add_event_detect(self.gpioLowerLimitSwitch, GPIO.BOTH, callback=self._handle_switch, bouncetime=200)
 
     def __del__(self):
         GPIO.cleanup([self.gpioRelais, self.gpioUpperLimitSwitch,

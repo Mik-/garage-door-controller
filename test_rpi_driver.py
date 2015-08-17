@@ -5,10 +5,10 @@ import time
 driver = RPiDriver(18, 17, 27)
 
 print "RPi-Driver test"
-input "Press [Enter] to start test:"
+raw_input("Press [Enter] to start test")
 
 print "The relay is off, the switches are not closed"
-input "Press [Enter] to continue:"
+raw_input("Press [Enter] to continue")
 
 print "Close lower limit switch"
 while driver.get_lower_limit_switch_state() == False:
