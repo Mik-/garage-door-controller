@@ -1,5 +1,5 @@
-from rpi_driver import RPiDriver
-from model import Door
+from garage.door.rpi_driver import RPiDriver
+from garage.door.model import Door
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
