@@ -1,4 +1,5 @@
 from ..positions import *
+import logging
 
 class IntermediateState:
     def __init__(self, door_model):

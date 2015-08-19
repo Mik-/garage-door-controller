@@ -1,3 +1,5 @@
+import logging
+
 class ErrorState:
     def __init__(self, door_model):
         self.door_model = door_model

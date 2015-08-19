@@ -1,5 +1,6 @@
 from threading import Timer
 from ..positions import *
+import logging
 
 class ClosingState:
     def __init__(self, door_model):
