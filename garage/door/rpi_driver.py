@@ -6,7 +6,7 @@ import logging
 try:
     import RPi.GPIO as GPIO
 except RuntimeError:
-    logger.error("Error importing RPi.GPIO")
+    logging.error("Error importing RPi.GPIO")
     print("Error importing RPi.GPIO!  This is probably because you need " +
         "superuser privileges.  You can achieve this by using 'sudo' to run " +
         "your script")
@@ -15,10 +15,10 @@ class RPiDriver(Driver):
     """Implements the Driver interface for the Raspberry Pi."""
 
     def __init__(self, gpioRelay, gpioUpperLimitSwitch, gpioLowerLimitSwitch):
-        logger.debug("Starting Raspberry PI driver")
-        logger.debug(" Relay port        : %d", gpioRelay)
-        logger.debug(" Upper limit switch: %d", gpioUpperLimitSwitch)
-        logger.debug(" Lower limit switch: %d", gpioLowerLimitSwitch)
+        logging.debug("Starting Raspberry PI driver")
+        logging.debug(" Relay port        : %d", gpioRelay)
+        logging.debug(" Upper limit switch: %d", gpioUpperLimitSwitch)
+        logging.debug(" Lower limit switch: %d", gpioLowerLimitSwitch)
         self.gpioRelay = gpioRelay
         self.gpioUpperLimitSwitch = gpioUpperLimitSwitch
         self.gpioLowerLimitSwitch = gpioLowerLimitSwitch
@@ -37,11 +37,11 @@ class RPiDriver(Driver):
             self.gpioLowerLimitSwitch])
 
     def start_door_signal(self):
-        logger.debug("Close relay on port %d", self.gpioRelay)
+        logging.debug("Close relay on port %d", self.gpioRelay)
         GPIO.output(self.gpioRelay, GPIO.HIGH)
 
     def stop_door_signal(self):
-        logger.debug("Open relay on port %d", self.gpioRelay)
+        logging.debug("Open relay on port %d", self.gpioRelay)
         GPIO.output(self.gpioRelay, GPIO.LOW)
 
     def get_upper_limit_switch_state(self):
