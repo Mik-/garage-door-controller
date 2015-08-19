@@ -11,7 +11,7 @@ class IntermediateState:
             self.door_model.set_new_state("Closed")
 
     def enter(self):
-        pass
+        logging.error("State 'intermediate' entered")
 
     def exit(self):
-        pass
+        logging.error("State 'intermediate' exited")

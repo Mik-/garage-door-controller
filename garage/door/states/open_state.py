@@ -11,7 +11,8 @@ class OpenState:
             self.door_model.set_new_state("Closing")
 
     def enter(self):
-        pass
+        logging.error("State 'open' entered")
 
     def exit(self):
+        logging.error("State 'open' exited")
         self.door_model.stop_door_signal()

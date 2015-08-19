@@ -1,4 +1,5 @@
 from ..positions import *
+import logging
 
 class ClosedState:
     def __init__(self, door_model):
@@ -11,7 +12,8 @@ class ClosedState:
             self.door_model.set_new_state("Opening")
 
     def enter(self):
-        pass
+        logging.debug("State 'closed' entered")
 
     def exit(self):
+        logging.debug("State 'closed' exited")
         self.door_model.stop_door_signal()

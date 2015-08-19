@@ -3,7 +3,7 @@ class ErrorState:
         self.door_model = door_model
 
     def enter(self):
-        pass
+        logging.error("State 'error' entered")
 
     def exit(self):
-        pass
+        logging.error("State 'error' exited")

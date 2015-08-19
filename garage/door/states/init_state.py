@@ -5,6 +5,8 @@ class InitState:
         self.door_model = door_model
 
     def enter(self):
+        logging.error("State 'init' entered")
+
         if self.door_model.get_door_position() == DOOR_POSITION_INTERMEDIATE:
             self.door_model.set_new_state("Intermediate")
         elif self.door_model.get_door_position() == DOOR_POSITION_CLOSED:
@@ -13,4 +15,4 @@ class InitState:
             self.door_model.set_new_state("Open")
 
     def exit(self):
-        pass
+        logging.error("State 'init' exited")

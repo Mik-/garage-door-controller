@@ -12,14 +12,20 @@ class ClosingState:
             self.door_model.set_new_state("Closed")
 
     def enter(self):
+        logging.debug("State 'closing' entered")
+
         self.timer = Timer(self.door_model.transit_time, self._transit_timeout)
         self.timer.start()
 
     def exit(self):
+        logging.debug("State 'closing' exited")
+
         if self.timer:
             self.timer.cancel()
             self.timer = False
 
     def _transit_timeout(self):
+        logging.info("Transit timeout reached.")
+
         self.timer = False
         self.door_model.set_new_state("Intermediate")
