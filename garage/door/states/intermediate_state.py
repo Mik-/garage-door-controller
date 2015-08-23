@@ -1,6 +1,8 @@
 from ..positions import *
 import logging
 
+logger = logging.getLogger(__name__)
+
 class IntermediateState:
     def __init__(self, door_model):
         self.door_model = door_model
@@ -12,7 +14,7 @@ class IntermediateState:
             self.door_model.set_new_state("Closed")
 
     def enter(self):
-        logging.error("State 'intermediate' entered")
+        logger.debug("State 'intermediate' entered")
 
     def exit(self):
-        logging.error("State 'intermediate' exited")
+        logger.debug("State 'intermediate' exited")

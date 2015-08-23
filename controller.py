@@ -5,7 +5,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 driver = RPiDriver(18, 17, 27)
-model = Door("door 1", driver, 5, 1)
+model = Door("door 1", driver, 5, 1, 2)
 
 while True:
     pass

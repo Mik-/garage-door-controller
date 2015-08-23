@@ -16,7 +16,7 @@ def switch_status(sender):
     print "Lower limit switch: %r" % driver.get_lower_limit_switch_state()
 
 
-print "RPi-Driver test"
+print "Driver test"
 raw_input("Press [Enter] to start test")
 
 print "The relay is off, the switches are not closed"
