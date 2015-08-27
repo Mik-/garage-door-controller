@@ -5,7 +5,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class OpenIntent:
+class CloseIntent:
     def __init__(self, door_model):
         self.door_model = door_model
         self.timer = False
@@ -15,8 +15,8 @@ class OpenIntent:
 
     def start(self):
         """This intent controls the model in that way, that the door is
-        eventually open."""
-        logger.debug("Intent 'Open' started.")
+        eventually closed."""
+        logger.debug("Intent 'Close' started.")
         self.allowed_state_changes = 5
 
         signal(SIGNAL_DOOR_STATE_CHANGED).connect(self._state_changed, sender=self.door_model)
@@ -27,7 +27,7 @@ class OpenIntent:
         self.allowed_state_changes -= 1
         if self.allowed_state_changes <= 0:
             # Too many state changes, stop this intent
-            logger.warning("Intent 'Open' aborted due to many state changes!")
+            logger.warning("Intent 'Close' aborted due to many state changes!")
             self.door_model.set_intent("Idle")
         elif sender == self.door_model:
             self._send_command_to_door()
@@ -39,25 +39,25 @@ class OpenIntent:
         if self.timer:
             self.timer.cancel()
 
-        if self.door_model.state.__class__.__name__ == "OpenState":
+        if self.door_model.state.__class__.__name__ == "ClosedState":
             # The intent is fulfilled
-            logger.debug("Intent 'Open' fulfilled.")
+            logger.debug("Intent 'Close' fulfilled.")
             self.door_model.set_intent("Idle")
 
-        elif self.door_model.state.__class__.__name__ == "ClosedState":
-            # The door is closed. Trigger the door to open it
-            logger.debug("Door is closed. Trigger opening.")
+        elif self.door_model.state.__class__.__name__ == "OpenState":
+            # The door is open. Trigger the door to close it
+            logger.debug("Door is open. Trigger closing.")
             self.door_model.start_door_signal()
             self._set_timer(self.door_model.accelerate_time)
 
-        elif self.door_model.state.__class__.__name__ == "OpeningState":
-            # The door is going to be open. Just wait
+        elif self.door_model.state.__class__.__name__ == "ClosingState":
+            # The door is going to be closed. Just wait
             logger.debug("Waiting.")
             self._set_timer(self.door_model.transit_time)
 
-        elif self.door_model.state.__class__.__name__ == "ClosingState":
-            # The door is going to be closed. Stop it, wait and open it
-            logger.debug("Stop door to open it with the next command.")
+        elif self.door_model.state.__class__.__name__ == "OpeningState":
+            # The door is going to be open. Stop it, wait and close it
+            logger.debug("Stop door to close it with the next command.")
             self.door_model.start_door_signal()
             self._set_timer(self.door_model.transit_time)
 
@@ -67,7 +67,7 @@ class OpenIntent:
             self._set_timer(self.door_model.transit_time)
 
         elif self.door_model.state.__class__.__name__ == "ErrorState":
-            logger.debug("Door in error state. Abort intent.")
+            logger.debug("OpenIntent: Door in error state. Abort intent.")
             self.door_model.set_intent("Idle")
         else:
             logger.error("Unhandled door state %s", self.door_model.state.__class__.__name__)
