@@ -23,3 +23,9 @@ My external circuit looks like this:
 ## Software
 
 The software creation is still in progress.
+
+## Setup
+
+sudo apt-get install python-pip
+sudo pip install blinker
+sudo pip install web.py

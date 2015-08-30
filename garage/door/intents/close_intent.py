@@ -3,7 +3,7 @@ from blinker import signal
 from threading import Timer
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('garage.door.' + __name__)
 
 class CloseIntent:
     def __init__(self, door_model):

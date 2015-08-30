@@ -1,0 +1,5 @@
+<div ng-repeat="door in vm.doorList">
+  {{ door.id }}. Door name: {{ door.name }}
+  <span ng-show="door.state">state: {{ door.state }}</span>
+  <span ng-show="door.intent">intent: {{ door.intent }}</span>
+</div>

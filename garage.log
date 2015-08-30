@@ -1,0 +1,270 @@
+Door 'door 1' instantiation start
+State 'init' entered
+State 'init' exited
+State 'intermediate' entered
+Door 'door 1' instantiated
+Door 'door 1' instantiation start
+Door 'door 1' instantiation start
+State 'init' entered
+State 'init' entered
+State 'init' exited
+State 'init' exited
+State 'intermediate' entered
+State 'intermediate' entered
+Door 'door 1' instantiated
+Door 'door 1' instantiated
+2015-08-29 10:03:42,501 - %(levelname)s - Door 'door 1' instantiation start
+2015-08-29 10:03:42,515 - %(levelname)s - State 'init' entered
+2015-08-29 10:03:42,515 - %(levelname)s - State 'init' exited
+2015-08-29 10:03:42,515 - %(levelname)s - State 'intermediate' entered
+2015-08-29 10:03:42,516 - %(levelname)s - Door 'door 1' instantiated
+2015-08-29 10:04:24,471 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-29 10:04:24,472 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-29 10:04:24,472 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-29 10:04:24,472 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-29 10:04:24,472 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-29 10:04:32,063 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-29 10:04:32,063 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-29 10:04:32,063 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-29 10:04:32,063 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-29 10:04:32,064 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-29 10:04:32,064 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-29 10:04:32,064 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-29 10:04:32,064 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-29 10:04:32,064 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-29 10:04:32,064 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 13:01:46,539 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 13:01:46,579 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 13:01:46,579 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 13:01:46,581 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 13:01:46,589 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 13:02:05,014 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 13:02:05,014 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 13:02:05,014 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 13:02:05,014 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 13:02:05,014 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 13:02:05,014 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 13:02:05,014 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 13:02:05,014 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 13:02:05,015 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 13:02:05,015 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 14:06:41,175 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 14:06:41,176 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 14:06:41,176 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 14:06:41,177 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 14:06:41,177 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 14:06:44,486 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 14:06:44,486 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 14:06:44,486 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 14:06:44,486 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 14:06:44,486 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 14:06:44,486 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 14:06:44,486 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 14:06:44,486 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 14:06:44,486 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 14:06:44,486 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 19:11:37,295 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 19:11:37,295 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 19:11:37,295 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 19:11:37,363 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 19:11:37,363 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 19:11:37,363 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 19:11:37,363 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 19:11:37,363 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 19:11:37,363 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 19:11:37,363 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 19:11:37,363 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 19:11:37,363 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 19:11:37,364 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 19:11:37,364 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 19:11:37,364 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:20:07,877 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:20:07,877 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:20:07,877 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:20:07,877 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:20:07,878 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:28:13,594 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:28:13,594 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:28:13,594 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:28:13,594 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:28:13,594 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:28:13,594 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:28:13,595 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:28:13,595 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:28:13,595 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:28:13,595 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:35:13,012 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:35:13,012 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:35:13,012 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:35:13,012 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:35:13,012 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:35:13,012 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:35:13,012 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:35:13,012 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:35:13,012 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:35:13,012 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:35:13,012 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:35:13,012 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:35:13,012 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:35:13,012 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:35:13,012 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:36:17,021 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:36:17,021 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:36:17,021 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:36:17,021 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:36:17,022 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:36:17,022 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:36:17,022 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:36:17,022 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:36:17,022 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:36:17,022 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:36:17,022 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:36:17,022 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:36:17,022 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:36:17,022 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:36:17,022 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:36:17,022 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:36:17,022 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:36:17,022 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:36:17,022 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:36:17,022 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:37:55,968 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:37:55,968 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:37:55,968 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:37:55,968 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:37:55,968 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:37:55,969 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:37:55,970 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:37:55,970 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:37:55,970 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:37:55,970 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:37:55,970 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:37:55,970 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:37:55,970 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:37:55,970 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:37:55,970 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:37:55,970 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:37:55,970 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:37:55,971 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:37:55,971 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:37:55,971 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:37:55,971 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:37:55,971 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:38:11,727 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:38:11,728 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:38:11,728 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:38:11,728 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:38:11,728 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:38:11,728 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:38:11,728 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:38:11,728 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:38:11,729 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:38:11,729 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:38:13,318 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:38:13,318 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:38:13,318 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:38:13,318 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:38:13,318 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:38:13,318 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:38:13,318 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:38:13,318 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:38:13,319 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:38:13,319 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:38:13,319 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:38:13,319 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:38:13,319 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:38:13,319 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:38:13,319 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:38:13,319 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:38:13,319 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:38:13,319 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:38:13,319 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:38:13,319 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:39:04,937 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:39:04,938 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:39:04,938 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:39:04,938 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:39:04,938 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:39:04,938 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:39:04,938 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:39:04,938 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:39:04,939 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:39:04,939 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:39:09,636 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:39:09,636 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:39:09,636 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:39:09,636 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:39:09,636 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:39:09,636 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:39:09,636 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:39:09,636 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:39:09,636 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:39:09,636 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:39:09,636 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:39:09,636 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:39:09,637 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:39:09,637 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:39:09,637 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:39:09,637 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:39:09,637 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:39:09,637 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:39:09,637 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:39:09,637 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:41:37,025 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:41:37,026 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:41:37,026 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:41:37,026 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:41:37,026 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:41:37,026 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:41:37,026 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:41:37,026 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:41:37,027 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:41:37,027 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:41:39,695 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:41:39,695 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
+2015-08-30 21:41:39,695 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:41:39,695 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:41:39,696 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:41:39,696 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:41:39,696 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:41:39,696 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:41:39,696 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:41:39,696 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
+2015-08-30 21:41:39,696 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:41:39,696 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiation start
+2015-08-30 21:41:39,696 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:41:39,696 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
+2015-08-30 21:41:39,696 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:41:39,696 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
+2015-08-30 21:41:39,696 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:41:39,696 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
+2015-08-30 21:41:39,697 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated
+2015-08-30 21:41:39,697 - garage.door.garage.door.model - DEBUG - Door 'door left' instantiated

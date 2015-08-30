@@ -2,7 +2,7 @@ from threading import Timer
 from ..positions import *
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('garage.door.' + __name__)
 
 class ClosingState:
     def __init__(self, door_model):

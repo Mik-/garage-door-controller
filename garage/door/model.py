@@ -5,7 +5,7 @@ from blinker import signal
 from signals import *
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('garage.door.' + __name__)
 
 class Door(object):
     def __init__(self, name, driver, transit_time, trigger_time, accelerate_time):

@@ -1,6 +1,6 @@
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('garage.door.' + __name__)
 
 class ErrorState:
     def __init__(self, door_model):
