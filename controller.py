@@ -4,6 +4,8 @@ from garage.door.model import Door
 import web
 import logging
 
+web.config.debug = False
+
 logger = logging.getLogger('garage')
 logger.setLevel(logging.DEBUG)
 
@@ -14,16 +16,11 @@ filehandler.setLevel(logging.DEBUG)
 filehandler.setFormatter(formatter)
 logger.addHandler(filehandler)
 
-# create the door_list only once, web.py loads this module at least twice
-if web.config.get('_door_list') is None:
-    driver = RPiDriver(18, 17, 27)
-    #driver = MockDriver()
+driver = RPiDriver(18, 17, 27)
+#driver = MockDriver()
 
-    door_list = []
-    door_list.append(Door("door 1", driver, 5, 1, 2))
-    web.config._door_list = door_list
-else:
-    door_list = web.config._door_list
+door_list = []
+door_list.append(Door("door 1", driver, 5, 1, 2))
 
 urls = (
     '/doors', 'ListDoors',
