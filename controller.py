@@ -14,20 +14,21 @@ filehandler.setLevel(logging.DEBUG)
 filehandler.setFormatter(formatter)
 logger.addHandler(filehandler)
 
+# create the door_list only once, web.py loads this module at least twice
+if web.config.get('_door_list') is None:
+    driver = RPiDriver(18, 17, 27)
+    #driver = MockDriver()
 
-driver = RPiDriver(18, 17, 27)
-#driver = MockDriver()
-
-door_list = []
-door_list.append(Door("door 1", driver, 5, 1, 2))
-#door_list.append(Door("door left", driver, 5, 1, 2))
+    door_list = []
+    door_list.append(Door("door 1", driver, 5, 1, 2))
+    web.config._door_list = door_list
+else:
+    door_list = web.config._door_list
 
 urls = (
     '/doors', 'ListDoors',
     '/door/(.*)', 'DoorState'
 )
-
-app = web.application(urls, globals())
 
 class ListDoors:
     def GET(self):
@@ -53,4 +54,6 @@ class DoorState:
 
 
 if __name__ == "__main__":
+    app = web.application(urls, globals())
+
     app.run()
