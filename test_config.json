@@ -1,0 +1,13 @@
+{
+  "door-list": [
+    {
+      "name": "Test Door 1",
+      "driver": {
+        "class": "MockDriver"
+      },
+      "transitTime": 5,
+      "triggerTime": 1,
+      "accelerateTime": 2
+    }
+  ]
+}

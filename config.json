@@ -1,0 +1,16 @@
+{
+  "door-list": [
+    {
+      "name": "Door 1",
+      "driver": {
+        "class": "RPiDriver",
+        "gpioRelay": 18,
+        "gpioUpperLimitSwitch": 17,
+        "gpioLowerLimitSwitch": 27
+      },
+      "transitTime": 30,
+      "triggerTime": 2,
+      "accelerateTime": 2
+    }
+  ]
+}
