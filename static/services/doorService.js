@@ -7,7 +7,8 @@
 
   function doorService($http, $rootScope, $log, $q) {
     var service = {
-      getDoorState: getDoorState
+      getDoorState: getDoorState,
+      triggerDoor: triggerDoor
     }
 
     return service;
@@ -17,8 +18,21 @@
 
       $http.get('/door/' + index)
         .success(function (doorState) {
-          $log.debug(JSON.stringify(doorState));
           deferred.resolve(doorState);
+        })
+        .error(function (data, status) {
+          deferred.reject(status);
+        });
+
+      return deferred.promise;
+    }
+
+    function triggerDoor(index) {
+      var deferred = $q.defer();
+
+      $http.post('/door/' + index, '{ "trigger": true }')
+        .success(function (doorState) {
+          deferred.resolve();
         })
         .error(function (data, status) {
           deferred.reject(status);

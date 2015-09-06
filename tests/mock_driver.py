@@ -1,7 +1,7 @@
 from garage.door.driver import Driver
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("tests." + __name__)
 
 class MockDriver(Driver):
     def __init__(self):

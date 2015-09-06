@@ -48,6 +48,11 @@ class DoorState:
             door_list[id].intent.__class__.__name__)
         return response
 
+    def POST(self, door_id):
+        id = int(door_id)
+
+        door_list[id].start_door_signal()
+
 def init():
     # Process config file
     with open(config_filename) as json_data_file:
@@ -55,9 +60,11 @@ def init():
 
     for door_config in config_data["door-list"]:
         if door_config["driver"]["class"] == "MockDriver":
+            # Instantiate mock driver
             mockdriver_module = importlib.import_module("tests.mock_driver")
             driver = getattr(mockdriver_module, "MockDriver")()
         elif door_config["driver"]["class"] == "RPiDriver":
+            # Instantiate RPi driver
             rpidriver_module = importlib.import_module("garage.door.rpi_driver")
             driver = getattr(mockdriver_module, "RPiDriver")(
                 door_config["driver"]["gpioRelay"],
@@ -73,13 +80,13 @@ if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option("-c", "--config", dest="config_filename", help="config filename; defaults to config.json")
     (options, args) = parser.parse_args()
-    # args contains the remaining options. Assign args to sys.argv to hand them
-    # over to the web app
-    sys.argv = args
 
     if options.config_filename:
         config_filename = options.config_filename
-    print (config_filename)
+
+    # args contains the remaining options. Assign args to sys.argv to hand them
+    # over to the web app
+    sys.argv = args
 
     init()
 

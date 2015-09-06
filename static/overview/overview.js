@@ -40,6 +40,16 @@
           vm.doorList = [];
           $log.error('doorListService returns status ' + status);
         });
-    }]);
 
+        vm.triggerDoor = function triggerDoor(index) {
+          doorService.triggerDoor(index - 1)
+            .then(function () {
+              vm.result = 'Door triggered';
+            })
+            .catch(function (status) {
+              $log.error('doorService.triggerDoor returns status ' + status);
+              vm.result = 'doorService.triggerDoor returns status ' + status;
+            })
+        }
+    }]);
 })();
