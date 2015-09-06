@@ -1,8 +1,10 @@
-from garage.door.rpi_driver import RPiDriver
-#from tests.mock_driver import MockDriver
 from garage.door.model import Door
 import web
 import logging
+from optparse import OptionParser
+import sys
+import json
+import importlib
 
 web.config.debug = False
 
@@ -16,11 +18,8 @@ filehandler.setLevel(logging.DEBUG)
 filehandler.setFormatter(formatter)
 logger.addHandler(filehandler)
 
-driver = RPiDriver(18, 17, 27)
-#driver = MockDriver()
-
+config_filename = 'config.json'
 door_list = []
-door_list.append(Door("door 1", driver, 5, 1, 2))
 
 urls = (
     '/doors', 'ListDoors',
@@ -49,8 +48,41 @@ class DoorState:
             door_list[id].intent.__class__.__name__)
         return response
 
+def init():
+    # Process config file
+    with open(config_filename) as json_data_file:
+        config_data = json.load(json_data_file)
+
+    for door_config in config_data["door-list"]:
+        if door_config["driver"]["class"] == "MockDriver":
+            mockdriver_module = importlib.import_module("tests.mock_driver")
+            driver = getattr(mockdriver_module, "MockDriver")()
+        elif door_config["driver"]["class"] == "RPiDriver":
+            rpidriver_module = importlib.import_module("garage.door.rpi_driver")
+            driver = getattr(mockdriver_module, "RPiDriver")(
+                door_config["driver"]["gpioRelay"],
+                door_config["driver"]["gpioUpperLimitSwitch"],
+                door_config["driver"]["gpioLowerLimitSwitch"])
+
+        new_door = Door(door_config["name"], driver, door_config["transitTime"],
+            door_config["triggerTime"], door_config["accelerateTime"])
+        door_list.append(new_door)
 
 if __name__ == "__main__":
+    # Parse the command line options
+    parser = OptionParser()
+    parser.add_option("-c", "--config", dest="config_filename", help="config filename; defaults to config.json")
+    (options, args) = parser.parse_args()
+    # args contains the remaining options. Assign args to sys.argv to hand them
+    # over to the web app
+    sys.argv = args
+
+    if options.config_filename:
+        config_filename = options.config_filename
+    print (config_filename)
+
+    init()
+
     app = web.application(urls, globals())
 
     app.run()

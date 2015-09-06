@@ -1,5 +1,0 @@
-2015-08-30 22:15:09,606 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiation start
-2015-08-30 22:15:09,607 - garage.door.garage.door.states.init_state - DEBUG - State 'init' entered
-2015-08-30 22:15:09,607 - garage.door.garage.door.states.init_state - DEBUG - State 'init' exited
-2015-08-30 22:15:09,607 - garage.door.garage.door.states.intermediate_state - DEBUG - State 'intermediate' entered
-2015-08-30 22:15:09,607 - garage.door.garage.door.model - DEBUG - Door 'door 1' instantiated
