@@ -1,5 +1,5 @@
 <div ng-repeat="door in vm.doorList">
-  {{ door.id }}. Door name: {{ door.name }}
+  <span class="door__name">{{ door.id }}. Door name: {{ door.name }}</span>
   <span ng-show="door.state">state: {{ door.state }}</span>
   <span ng-show="door.intent">intent: {{ door.intent }}</span>
   <a href="" ng-click="vm.triggerDoor(door.id)" class="button">Trigger</a>

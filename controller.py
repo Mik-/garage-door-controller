@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from garage.door.model import Door
 import web
 import logging
@@ -23,7 +25,8 @@ door_list = []
 
 urls = (
     '/doors', 'ListDoors',
-    '/door/(.*)', 'DoorState'
+    '/door/(.*)', 'DoorState',
+    '/log', 'ShowLog'
 )
 
 class ListDoors:
@@ -52,6 +55,14 @@ class DoorState:
         id = int(door_id)
 
         door_list[id].start_door_signal()
+
+class ShowLog:
+    def GET(self):
+        try:
+            f = open('garage.log', 'r');
+            return f.read()
+        except IOError:
+            return 'can not open garage.log'
 
 def init():
     # Process config file

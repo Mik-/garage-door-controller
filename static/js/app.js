@@ -1,3 +1,11 @@
+(function() {
+  'use strict';
+
+  angular
+    .module('myApp.log', ['myApp.logService']);
+
+}());
+
 (function () {
   'use strict';
   
@@ -16,27 +24,77 @@
   angular
     .module('myApp.doorService', []);
 
+  angular
+    .module('myApp.logService', []);
+
 }());
 
-'use strict';
+(function() {
+  'use strict';
 
-// Declare app level module which depends on views, and components
-angular.module('myApp', [
-  'ngRoute',
-  'myApp.overview'
-]).
-config(['$routeProvider', function($routeProvider) {
-  $routeProvider.otherwise({redirectTo: '/overview'});
-}]);
+  // Declare app level module which depends on views, and components
+  angular.module('myApp', [
+    'ngRoute',
+    'myApp.overview',
+    'myApp.log'
+  ]).
+  config(['$routeProvider', function($routeProvider) {
+    $routeProvider.otherwise({redirectTo: '/overview'});
+  }]);
+}());
 
 angular.module('myApp').run(['$templateCache', function($templateCache) {
   'use strict';
 
+  $templateCache.put('log/log.tpl.html',
+    "<pre>\n" +
+    "{{ vm.log }}\n" +
+    "</pre>"
+  );
+
+
   $templateCache.put('overview/overview.tpl.html',
-    "<div ng-repeat=\"door in vm.doorList\">{{ door.id }}. Door name: {{ door.name }} <span ng-show=door.state>state: {{ door.state }}</span> <span ng-show=door.intent>intent: {{ door.intent }}</span> <a href=\"\" ng-click=vm.triggerDoor(door.id) class=button>Trigger</a></div>{{ vm.result }}"
+    "<div ng-repeat=\"door in vm.doorList\"><span class=door__name>{{ door.id }}. Door name: {{ door.name }}</span> <span ng-show=door.state>state: {{ door.state }}</span> <span ng-show=door.intent>intent: {{ door.intent }}</span> <a href=\"\" ng-click=vm.triggerDoor(door.id) class=button>Trigger</a></div>{{ vm.result }}"
   );
 
 }]);
+
+(function() {
+  'use strict';
+
+  angular
+    .module('myApp.log')
+    .config(['$routeProvider', function($routeProvider) {
+      $routeProvider.when('/log', {
+        templateUrl: 'log/log.tpl.html',
+        controller: 'LogCtrl',
+        controllerAs: 'vm'
+      });
+    }]);
+
+  angular
+    .module('myApp.log')
+    .controller('LogCtrl', ['logService', '$log', LogCtrl]);
+
+  function LogCtrl(logService, $log) {
+    var vm = this;
+
+    activate();
+
+    // --------
+
+    function activate() {
+      logService.getLog()
+        .then(function(data) {
+          vm.log = data;
+        })
+        .catch(function(status) {
+          $log.error('doorListService returns status ' + status);
+          vm.log = 'logService returns status ' + status;
+        });
+    }
+  }
+})();
 
 (function() {
   'use strict';
@@ -49,19 +107,30 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
         controller: 'OverviewCtrl',
         controllerAs: 'vm'
       });
-    }])
-    .controller('OverviewCtrl', ['doorListService', 'doorService', '$log',
-      function(doorListService, doorService, $log) {
-      var vm = this;
+    }]);
 
+  angular
+    .module('myApp.overview')
+    .controller('OverviewCtrl', ['doorListService', 'doorService', '$log', OverviewCtrl]);
+
+  function OverviewCtrl(doorListService, doorService, $log) {
+    var vm = this;
+
+    vm.triggerDoor = triggerDoor;
+
+    activate();
+
+    // ------------------
+
+    function activate() {
       doorListService.getDoorList()
-        .then(function (data){
+        .then(function(data) {
           vm.doorList = data;
           $log.debug(JSON.stringify(vm.doorList));
 
           for (var i = 0; i < vm.doorList.length; i++) {
             doorService.getDoorState(i)
-              .then(function (data) {
+              .then(function(data) {
                 for (var j = 0; j < vm.doorList.length; j++) {
                   if (vm.doorList[j].name = data.name) {
                     vm.doorList[j].state = data.state;
@@ -70,28 +139,32 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
                 }
                 $log.debug(JSON.stringify(data));
               })
-              .catch(function (status) {
+              .catch(function(status) {
                 vm.doorList[i].state = null;
                 $log.error('doorService.getDoorState returns status ' + status);
               })
           }
         })
-        .catch(function (status) {
+        .catch(function(status) {
           vm.doorList = [];
           $log.error('doorListService returns status ' + status);
         });
+    }
 
-        vm.triggerDoor = function triggerDoor(index) {
-          doorService.triggerDoor(index - 1)
-            .then(function () {
-              vm.result = 'Door triggered';
-            })
-            .catch(function (status) {
-              $log.error('doorService.triggerDoor returns status ' + status);
-              vm.result = 'doorService.triggerDoor returns status ' + status;
-            })
-        }
-    }]);
+    function triggerDoor(index) {
+      doorService.triggerDoor(index - 1)
+        .then(function() {
+          vm.result = 'Door triggered';
+          setTimeout(function(vm) {
+            vm.result = '';
+          }, 5000, vm);
+        })
+        .catch(function(status) {
+          $log.error('doorService.triggerDoor returns status ' + status);
+          vm.result = 'doorService.triggerDoor returns status ' + status;
+        })
+    }
+  }
 })();
 
 (function () {
@@ -162,6 +235,36 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
           deferred.resolve();
         })
         .error(function (data, status) {
+          deferred.reject(status);
+        });
+
+      return deferred.promise;
+    }
+  }
+})();
+
+(function() {
+  'use strict';
+
+  angular
+    .module('myApp.logService')
+    .factory('logService', logService);
+
+  function logService($http, $rootScope, $log, $q) {
+    var service = {
+      getLog: getLog
+    }
+
+    return service;
+
+    function getLog() {
+      var deferred = $q.defer();
+
+      $http.get('/log')
+        .success(function(log) {
+          deferred.resolve(log);
+        })
+        .error(function(data, status) {
           deferred.reject(status);
         });
 

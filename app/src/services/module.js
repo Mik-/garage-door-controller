@@ -7,4 +7,7 @@
   angular
     .module('myApp.doorService', []);
 
+  angular
+    .module('myApp.logService', []);
+
 }());

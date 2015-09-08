@@ -6,12 +6,14 @@ except ImportError:
 config = {
     'description': 'Garage door opener',
     'author': 'Michael Neuendorf',
-    'url': 'www.neuendorf-online.de',
+    'url': 'http://www.neuendorf-online.de',
     'download_url': 'www.neuendorf-online.de',
     'author_email': 'michael@neuendorf-online.de',
     'version': '0.1',
     'install_requires': ['nose', 'RPi.GPIO', 'blinker'],
     'packages': ['garage'],
+    'py_modules': ['controller'],
+    'data_files': [('/etc/init.d', ['scripts/garage-door-opener'])],
     'scripts': [],
     'name': 'garage'
 }

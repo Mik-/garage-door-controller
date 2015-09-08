@@ -1,10 +1,13 @@
-'use strict';
+(function() {
+  'use strict';
 
-// Declare app level module which depends on views, and components
-angular.module('myApp', [
-  'ngRoute',
-  'myApp.overview'
-]).
-config(['$routeProvider', function($routeProvider) {
-  $routeProvider.otherwise({redirectTo: '/overview'});
-}]);
+  // Declare app level module which depends on views, and components
+  angular.module('myApp', [
+    'ngRoute',
+    'myApp.overview',
+    'myApp.log'
+  ]).
+  config(['$routeProvider', function($routeProvider) {
+    $routeProvider.otherwise({redirectTo: '/overview'});
+  }]);
+}());
