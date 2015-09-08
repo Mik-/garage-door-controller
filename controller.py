@@ -66,7 +66,7 @@ def init():
         elif door_config["driver"]["class"] == "RPiDriver":
             # Instantiate RPi driver
             rpidriver_module = importlib.import_module("garage.door.rpi_driver")
-            driver = getattr(mockdriver_module, "RPiDriver")(
+            driver = getattr(rpidriver_module, "RPiDriver")(
                 door_config["driver"]["gpioRelay"],
                 door_config["driver"]["gpioUpperLimitSwitch"],
                 door_config["driver"]["gpioLowerLimitSwitch"])
