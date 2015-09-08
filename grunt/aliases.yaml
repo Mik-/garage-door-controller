@@ -1,0 +1,13 @@
+default:
+  - 'watch'
+
+release:
+  - 'clean:release'
+  - 'copy:release'
+  - 'sass:release'
+  - 'autoprefixer:release'
+  - 'ngtemplates:release'
+  - 'concat:release'
+  - 'concat:fontawesome'
+  - 'copy:fontawesome'
+  - 'cssmin:release'

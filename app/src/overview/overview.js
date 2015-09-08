@@ -2,10 +2,10 @@
   'use strict';
 
   angular
-    .module('myApp.overview', ['ngRoute', 'myApp.doorListService', 'myApp.doorService'])
+    .module('myApp.overview')
     .config(['$routeProvider', function($routeProvider) {
       $routeProvider.when('/overview', {
-        templateUrl: 'overview/overview.html',
+        templateUrl: 'overview/overview.tpl.html',
         controller: 'OverviewCtrl',
         controllerAs: 'vm'
       });

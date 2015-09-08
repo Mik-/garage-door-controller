@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('myApp.doorListService', [])
+    .module('myApp.doorListService')
     .factory('doorListService', doorListService);
 
   function doorListService($http, $rootScope, $log, $q) {
