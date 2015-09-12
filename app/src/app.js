@@ -5,6 +5,7 @@
   angular.module('myApp', [
     'ngRoute',
     'myApp.overview',
+    'myApp.doorDirective',
     'myApp.log'
   ]).
   config(['$routeProvider', function($routeProvider) {

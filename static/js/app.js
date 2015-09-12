@@ -2,13 +2,20 @@
   'use strict';
 
   angular
+    .module('myApp.doorDirective', ['myApp.doorService']);
+}());
+
+(function() {
+  'use strict';
+
+  angular
     .module('myApp.log', ['myApp.logService']);
 
 }());
 
 (function () {
   'use strict';
-  
+
   angular
     .module('myApp.overview', ['ngRoute', 'myApp.doorListService',
     'myApp.doorService']);
@@ -36,6 +43,7 @@
   angular.module('myApp', [
     'ngRoute',
     'myApp.overview',
+    'myApp.doorDirective',
     'myApp.log'
   ]).
   config(['$routeProvider', function($routeProvider) {
@@ -46,6 +54,11 @@
 angular.module('myApp').run(['$templateCache', function($templateCache) {
   'use strict';
 
+  $templateCache.put('directives/door.tpl.html',
+    "<span class=door__name>{{ doorId }}. Door name: {{ doorName }}</span> <span ng-show=state>state: {{ state }}</span> <span ng-show=intent>intent: {{ intent }}</span> <a href=\"\" ng-click=triggerDoor() class=button>Trigger</a>"
+  );
+
+
   $templateCache.put('log/log.tpl.html',
     "<pre>\n" +
     "{{ vm.log }}\n" +
@@ -54,10 +67,65 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('overview/overview.tpl.html',
-    "<div ng-repeat=\"door in vm.doorList\"><span class=door__name>{{ door.id }}. Door name: {{ door.name }}</span> <span ng-show=door.state>state: {{ door.state }}</span> <span ng-show=door.intent>intent: {{ door.intent }}</span> <a href=\"\" ng-click=vm.triggerDoor(door.id) class=button>Trigger</a></div>{{ vm.result }}"
+    "<div ng-repeat=\"door in vm.doorList\"><door door-id=door.id></door></div>{{ vm.result }}"
   );
 
 }]);
+
+(function() {
+  'use strict';
+
+  angular
+    .module('myApp.doorDirective')
+    .directive('door', DoorDirective);
+
+  function DoorDirective(doorService, $log) {
+    var doorId;
+
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/door.tpl.html',
+      scope: {
+        doorId: '=doorId'
+      },
+      link: function (scope, element, attrs) {
+        doorId = scope.doorId;
+
+        doorService.getDoorState(doorId)
+          .then(function(data) {
+            $log.debug('doorDirective: ' + JSON.stringify(data));
+            scope.doorName = data.name;
+            scope.state = data.state;
+            scope.intent = data.intent;
+
+            $log.debug(JSON.stringify(data));
+          })
+          .catch(function(status) {
+            scope.doorName = null;
+            scope.state = null;
+            scope.intent = null;
+
+            $log.error('doorService.getDoorState returns status ' + status);
+          });
+      }
+    }
+
+    function triggerDoor() {
+      doorService.triggerDoor(doorId)
+        .then(function() {
+          result = 'Door triggered';
+          setTimeout(function(vm) {
+            vm.result = '';
+          }, 5000, vm);
+        })
+        .catch(function(status) {
+          $log.error('doorService.triggerDoor returns status ' + status);
+          vm.result = 'doorService.triggerDoor returns status ' + status;
+        })
+
+    }
+  }
+}());
 
 (function() {
   'use strict';
@@ -127,23 +195,6 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
         .then(function(data) {
           vm.doorList = data;
           $log.debug(JSON.stringify(vm.doorList));
-
-          for (var i = 0; i < vm.doorList.length; i++) {
-            doorService.getDoorState(i)
-              .then(function(data) {
-                for (var j = 0; j < vm.doorList.length; j++) {
-                  if (vm.doorList[j].name = data.name) {
-                    vm.doorList[j].state = data.state;
-                    vm.doorList[j].intent = data.intent;
-                  }
-                }
-                $log.debug(JSON.stringify(data));
-              })
-              .catch(function(status) {
-                vm.doorList[i].state = null;
-                $log.error('doorService.getDoorState returns status ' + status);
-              })
-          }
         })
         .catch(function(status) {
           vm.doorList = [];

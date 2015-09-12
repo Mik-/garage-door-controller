@@ -26,7 +26,8 @@ door_list = []
 urls = (
     '/doors', 'ListDoors',
     '/door/(.*)', 'DoorState',
-    '/log', 'ShowLog'
+    '/log', 'ShowLog',
+    '/', 'Index'
 )
 
 class ListDoors:
@@ -47,14 +48,14 @@ class DoorState:
     def GET(self, door_id):
         id = int(door_id)
         response = '{"name": "%s","state": "%s","intent": "%s"}' % (
-            door_list[id].name, door_list[id].state.__class__.__name__,
-            door_list[id].intent.__class__.__name__)
+            door_list[id - 1].name, door_list[id - 1].state.__class__.__name__,
+            door_list[id - 1].intent.__class__.__name__)
         return response
 
     def POST(self, door_id):
         id = int(door_id)
 
-        door_list[id].start_door_signal()
+        door_list[id - 1].start_door_signal()
 
 class ShowLog:
     def GET(self):
@@ -63,6 +64,10 @@ class ShowLog:
             return f.read()
         except IOError:
             return 'can not open garage.log'
+
+class Index:
+    def GET(self):
+        pass
 
 def init():
     # Process config file
