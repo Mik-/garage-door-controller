@@ -55,7 +55,16 @@ class DoorState:
     def POST(self, door_id):
         id = int(door_id)
 
-        door_list[id - 1].start_door_signal()
+        post_data = json.loads(web.data())
+
+        if 'trigger' in post_data and post_data['trigger'] == True:
+            door_list[id - 1].start_door_signal()
+        elif 'intent' in post_data and post_data['intent'] == 'open':
+            door_list[id - 1].set_intent('Open')
+        elif 'intent' in post_data and post_data['intent'] == 'close':
+            door_list[id - 1].set_intent('Close')
+        else:
+            return web.notfound("Invalid post command!")
 
 class ShowLog:
     def GET(self):

@@ -1,4 +1,13 @@
-<span class="door__name">{{ doorId }}. Door name: {{ doorName }}</span>
-<span ng-show="state">state: {{ state }}</span>
-<span ng-show="intent">intent: {{ intent }}</span>
-<a href="" ng-click="triggerDoor()" class="button">Trigger</a>
+<div class="door">
+  <span class="door__name">{{ doorId }}. Door name:
+    {{ doorName }}</span>
+  <span ng-show="state">state:
+    {{ state }}</span>
+  <span ng-show="intent">intent:
+    {{ intent }}</span>
+  <a class="button" href="" ng-click="triggerDoor()">Trigger</a>
+  <div ng-show="state !== 'OpenState'" class="open-intent"><a href="" ng-click="setOpenIntent()" class="button">Open intent</a></div>
+  <div ng-show="state !== 'ClosedState'" class="close-intent"><a href="" ng-click="setCloseIntent()" class="button">Close intent</a></div>
+  <div ng-show="infoText" class="info-text">{{ infoText }}</div>
+  <div ng-show="errorText" class="error-text">{{ errorText }}</div>
+</div>

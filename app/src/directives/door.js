@@ -7,6 +7,7 @@
 
   function DoorDirective(doorService, $log) {
     var doorId;
+    var vm;
 
     return {
       restrict: 'E',
@@ -16,6 +17,10 @@
       },
       link: function (scope, element, attrs) {
         doorId = scope.doorId;
+        vm = scope;
+        scope.triggerDoor = triggerDoor;
+        scope.setOpenIntent = setOpenIntent;
+        scope.setCloseIntent = setCloseIntent;
 
         doorService.getDoorState(doorId)
           .then(function(data) {
@@ -39,16 +44,43 @@
     function triggerDoor() {
       doorService.triggerDoor(doorId)
         .then(function() {
-          result = 'Door triggered';
-          setTimeout(function(vm) {
-            vm.result = '';
-          }, 5000, vm);
+          vm.infoText = 'Door triggered';
+          setTimeout(function() {
+            vm.infoText = '';
+          }, 5000);
         })
         .catch(function(status) {
           $log.error('doorService.triggerDoor returns status ' + status);
-          vm.result = 'doorService.triggerDoor returns status ' + status;
+          vm.errorText = 'doorService.triggerDoor returns status ' + status;
         })
+    }
 
+    function setOpenIntent() {
+      doorService.setOpenIntent(doorId)
+        .then(function() {
+          vm.infoText = 'Intent "open" set';
+          setTimeout(function() {
+            vm.infoText = '';
+          }, 5000);
+        })
+        .catch(function(status) {
+          $log.error('doorService.setOpenIntent returns status ' + status);
+          vm.errorText = 'doorService.setOpenIntent returns status ' + status;
+        })
+    }
+
+    function setCloseIntent() {
+      doorService.setCloseIntent(doorId)
+        .then(function() {
+          vm.infoText = 'Intent "close" set';
+          setTimeout(function() {
+            vm.infoText = '';
+          }, 5000);
+        })
+        .catch(function(status) {
+          $log.error('doorService.setCloseIntent returns status ' + status);
+          vm.errorText = 'doorService.setCloseIntent returns status ' + status;
+        })
     }
   }
 }());

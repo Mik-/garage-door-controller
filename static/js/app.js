@@ -55,7 +55,7 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('directives/door.tpl.html',
-    "<span class=door__name>{{ doorId }}. Door name: {{ doorName }}</span> <span ng-show=state>state: {{ state }}</span> <span ng-show=intent>intent: {{ intent }}</span> <a href=\"\" ng-click=triggerDoor() class=button>Trigger</a>"
+    "<div class=door><span class=door__name>{{ doorId }}. Door name: {{ doorName }}</span> <span ng-show=state>state: {{ state }}</span> <span ng-show=intent>intent: {{ intent }}</span> <a class=button href=\"\" ng-click=triggerDoor()>Trigger</a><div ng-show=\"state !== 'OpenState'\" class=open-intent><a href=\"\" ng-click=setOpenIntent() class=button>Open intent</a></div><div ng-show=\"state !== 'ClosedState'\" class=close-intent><a href=\"\" ng-click=setCloseIntent() class=button>Close intent</a></div><div ng-show=infoText class=info-text>{{ infoText }}</div><div ng-show=errorText class=error-text>{{ errorText }}</div></div>"
   );
 
 
@@ -67,7 +67,7 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('overview/overview.tpl.html',
-    "<div ng-repeat=\"door in vm.doorList\"><door door-id=door.id></door></div>{{ vm.result }}"
+    "<div class=door-list ng-repeat=\"door in vm.doorList\"><door door-id=door.id></door></div>"
   );
 
 }]);
@@ -81,6 +81,7 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
 
   function DoorDirective(doorService, $log) {
     var doorId;
+    var vm;
 
     return {
       restrict: 'E',
@@ -90,6 +91,10 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
       },
       link: function (scope, element, attrs) {
         doorId = scope.doorId;
+        vm = scope;
+        scope.triggerDoor = triggerDoor;
+        scope.setOpenIntent = setOpenIntent;
+        scope.setCloseIntent = setCloseIntent;
 
         doorService.getDoorState(doorId)
           .then(function(data) {
@@ -113,16 +118,43 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
     function triggerDoor() {
       doorService.triggerDoor(doorId)
         .then(function() {
-          result = 'Door triggered';
-          setTimeout(function(vm) {
-            vm.result = '';
-          }, 5000, vm);
+          vm.infoText = 'Door triggered';
+          setTimeout(function() {
+            vm.infoText = '';
+          }, 5000);
         })
         .catch(function(status) {
           $log.error('doorService.triggerDoor returns status ' + status);
-          vm.result = 'doorService.triggerDoor returns status ' + status;
+          vm.errorText = 'doorService.triggerDoor returns status ' + status;
         })
+    }
 
+    function setOpenIntent() {
+      doorService.setOpenIntent(doorId)
+        .then(function() {
+          vm.infoText = 'Intent "open" set';
+          setTimeout(function() {
+            vm.infoText = '';
+          }, 5000);
+        })
+        .catch(function(status) {
+          $log.error('doorService.setOpenIntent returns status ' + status);
+          vm.errorText = 'doorService.setOpenIntent returns status ' + status;
+        })
+    }
+
+    function setCloseIntent() {
+      doorService.setCloseIntent(doorId)
+        .then(function() {
+          vm.infoText = 'Intent "close" set';
+          setTimeout(function() {
+            vm.infoText = '';
+          }, 5000);
+        })
+        .catch(function(status) {
+          $log.error('doorService.setCloseIntent returns status ' + status);
+          vm.errorText = 'doorService.setCloseIntent returns status ' + status;
+        })
     }
   }
 }());
@@ -259,7 +291,9 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
   function doorService($http, $rootScope, $log, $q) {
     var service = {
       getDoorState: getDoorState,
-      triggerDoor: triggerDoor
+      triggerDoor: triggerDoor,
+      setOpenIntent: setOpenIntent,
+      setCloseIntent: setCloseIntent
     }
 
     return service;
@@ -282,6 +316,34 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
       var deferred = $q.defer();
 
       $http.post('/door/' + index, '{ "trigger": true }')
+        .success(function (doorState) {
+          deferred.resolve();
+        })
+        .error(function (data, status) {
+          deferred.reject(status);
+        });
+
+      return deferred.promise;
+    }
+
+    function setOpenIntent(index) {
+      var deferred = $q.defer();
+
+      $http.post('/door/' + index, '{ "intent": "open" }')
+        .success(function (doorState) {
+          deferred.resolve();
+        })
+        .error(function (data, status) {
+          deferred.reject(status);
+        });
+
+      return deferred.promise;
+    }
+
+    function setCloseIntent(index) {
+      var deferred = $q.defer();
+
+      $http.post('/door/' + index, '{ "intent": "close" }')
         .success(function (doorState) {
           deferred.resolve();
         })
