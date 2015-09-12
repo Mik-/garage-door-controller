@@ -10,10 +10,6 @@ class CloseIntent:
         self.door_model = door_model
         self.timer = False
 
-    def __del__(self):
-        logger.debug("Destroying intent " + self.__class__.__name__)
-        signal(SIGNAL_DOOR_STATE_CHANGED).disconnect(self._state_changed, sender=self.door_model)
-
     def start(self):
         """This intent controls the model in that way, that the door is
         eventually closed."""
@@ -23,6 +19,16 @@ class CloseIntent:
         signal(SIGNAL_DOOR_STATE_CHANGED).connect(self._state_changed, sender=self.door_model)
 
         self._send_command_to_door()
+
+    def cleanup(self):
+        """Do cleanup tasks. Disconnect from signals an so on."""
+        logger.debug("Cleanup intent " + self.__class__.__name__)
+
+        if self.timer:
+            self.timer.cancel()
+            self.timer = False
+
+        signal(SIGNAL_DOOR_STATE_CHANGED).disconnect(self._state_changed, sender=self.door_model)
 
     def _state_changed(self, sender):
         self.allowed_state_changes -= 1

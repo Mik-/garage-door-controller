@@ -7,3 +7,7 @@ class IdleIntent:
     def start(self):
         """This intent should do nothing."""
         pass
+
+    def cleanup(self):
+        """Nothing to clean up."""
+        pass

@@ -30,9 +30,21 @@ class Door(object):
 
         logger.debug("Door '%s' instantiated", name)
 
-    def __del__(self):
+    def cleanup(self):
+        """Cleanup object, i.e. disconnnect from signals and so on."""
+        logger.debug('Model cleanup.')
         signal(SIGNAL_LOWER_SWITCH_CHANGED).disconnect(self._switch_changed)
         signal(SIGNAL_UPPER_SWITCH_CHANGED).disconnect(self._switch_changed)
+
+        if self.trigger_timer:
+            self.trigger_timer.cancel()
+            self.trigger_timer = False
+
+        if self.intent:
+            self.intent.cleanup()
+            self.intent = False
+
+        self.driver.cleanup()
 
     def start_door_signal(self):
         """Triggers the physical door controller by closing the relay.
@@ -109,6 +121,11 @@ class Door(object):
 
     def set_intent(self, new_intent_name):
         """Instantiate a new intent object by its name."""
+        # Cleanup last intent
+        if self.intent:
+            self.intent.cleanup()
+
+        # Instantiate new intent
         logger.debug("Setting new intent: " + new_intent_name)
         intent_module = importlib.import_module("garage.door.intents." + new_intent_name.lower() + "_intent")
         self.intent = getattr(intent_module, new_intent_name + "Intent")(self)

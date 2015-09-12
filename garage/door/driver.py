@@ -2,6 +2,10 @@ class Driver:
     """This is a absract hardware driver class.
 
     All drivers have to implement the folowing methods."""
+    def cleanup(self):
+        """Perform cleanup tasks here."""
+        raise NotImplementedError("Class %s doesn't implement cleanup()"
+            % (self.__class__.__name__))
 
     def start_door_signal(self):
         """Start signal to vendor controller to move the door. In most cases

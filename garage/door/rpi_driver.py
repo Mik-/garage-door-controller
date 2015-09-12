@@ -34,7 +34,9 @@ class RPiDriver(Driver):
         GPIO.add_event_detect(self.gpioUpperLimitSwitch, GPIO.BOTH, callback=self._handle_switch, bouncetime=200)
         GPIO.add_event_detect(self.gpioLowerLimitSwitch, GPIO.BOTH, callback=self._handle_switch, bouncetime=200)
 
-    def __del__(self):
+    def cleanup(self):
+        """Cleanup object, i.e. disconnnect from signals and so on."""
+        logger.debug('RPi driver cleanup.')
         GPIO.cleanup([self.gpioRelay, self.gpioUpperLimitSwitch,
             self.gpioLowerLimitSwitch])
 

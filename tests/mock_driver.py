@@ -10,6 +10,11 @@ class MockDriver(Driver):
         self.upper_limit_switch = False
         self.lower_limit_switch = False
 
+    def cleanup(self):
+        # nothing to cleanup here
+        logger.debug("MockDriver cleanup.")
+        pass
+
     def start_door_signal(self):
         logger.debug("door signal started")
         if self.door_signal == False:
