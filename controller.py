@@ -67,7 +67,7 @@ class ShowLog:
 
 class Index:
     def GET(self):
-        pass
+        raise web.seeother('/static/index.html')
 
 def init():
     # Process config file
