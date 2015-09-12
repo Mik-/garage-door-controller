@@ -11,6 +11,7 @@ class CloseIntent:
         self.timer = False
 
     def __del__(self):
+        logger.debug("Destroying intent " + self.__class__.__name__)
         signal(SIGNAL_DOOR_STATE_CHANGED).disconnect(self._state_changed, sender=self.door_model)
 
     def start(self):

@@ -108,7 +108,8 @@ class Door(object):
         self.stop_door_signal()
 
     def set_intent(self, new_intent_name):
-        # Instantiate a new state object by its name
+        """Instantiate a new intent object by its name."""
+        logger.debug("Setting new intent: " + new_intent_name)
         intent_module = importlib.import_module("garage.door.intents." + new_intent_name.lower() + "_intent")
         self.intent = getattr(intent_module, new_intent_name + "Intent")(self)
 
