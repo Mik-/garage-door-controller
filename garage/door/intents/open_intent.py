@@ -27,7 +27,7 @@ class OpenIntent:
         if self.timer:
             self.timer.cancel()
             self.timer = False
-            
+
         signal(SIGNAL_DOOR_STATE_CHANGED).disconnect(self._state_changed, sender=self.door_model)
 
     def _state_changed(self, sender):

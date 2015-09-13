@@ -10,7 +10,7 @@
       },
       "transitTime": 30,
       "triggerTime": 2,
-      "accelerateTime": 2
+      "accelerateTime": 4
     }
   ]
 }

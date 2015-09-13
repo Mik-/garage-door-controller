@@ -1,4 +1,4 @@
-class Driver:
+class Driver(object):
     """This is a absract hardware driver class.
 
     All drivers have to implement the folowing methods."""

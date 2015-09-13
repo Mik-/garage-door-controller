@@ -13,7 +13,6 @@ class MockDriver(Driver):
     def cleanup(self):
         # nothing to cleanup here
         logger.debug("MockDriver cleanup.")
-        pass
 
     def start_door_signal(self):
         logger.debug("door signal started")
