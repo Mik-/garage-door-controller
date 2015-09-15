@@ -16,6 +16,8 @@ class CloseIntent:
         logger.debug("Intent 'Close' started.")
         self.allowed_state_changes = 5
 
+        self.last_state_name = self.door_model.state.__class__.__name__
+
         signal(SIGNAL_DOOR_STATE_CHANGED).connect(self._state_changed, sender=self.door_model)
 
         self._send_command_to_door()
@@ -52,9 +54,15 @@ class CloseIntent:
             self.door_model.set_intent("Idle")
 
         elif self.door_model.state.__class__.__name__ == "OpenState":
-            # The door is open. Trigger the door to close it
-            logger.debug("Door is open. Trigger closing.")
-            self.door_model.start_door_signal()
+            # If the last state wasn't "open" just wait another accelerate time
+            # to prevent direct triggering when the door is just moved into limit switch
+            # After a wait time, this method is called again and the last state
+            # is the same
+            if self.last_state_name == 'OpenState':
+                # The door is open. Trigger the door to close it
+                logger.debug("Door is open. Trigger closing.")
+                self.door_model.start_door_signal()
+
             self._set_timer(self.door_model.accelerate_time)
 
         elif self.door_model.state.__class__.__name__ == "ClosingState":
@@ -79,6 +87,10 @@ class CloseIntent:
         else:
             logger.error("Unhandled door state %s", self.door_model.state.__class__.__name__)
             self.door_model.set_intent("Idle")
+
+        # remember the state to do something depending on it, when this method
+        # is called the next time
+        self.last_state_name = self.door_model.state.__class__.__name__
 
     def _set_timer(self, time):
             if self.timer:

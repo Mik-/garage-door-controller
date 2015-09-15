@@ -8,8 +8,8 @@
         "gpioUpperLimitSwitch": 17,
         "gpioLowerLimitSwitch": 27
       },
-      "transitTime": 30,
-      "triggerTime": 2,
+      "transitTime": 17,
+      "triggerTime": 1.5,
       "accelerateTime": 4
     }
   ]

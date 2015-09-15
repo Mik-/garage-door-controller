@@ -10,7 +10,7 @@ def test_perfect_door():
     driver = PerfectDoorDriver(0.4, 0.15)
     door_model = Door("Test door", driver, 0.5, 0.1, 0.2)
 
-    # The door is closed and idle
+    # The door is closed and idle   
     assert door_model.state.__class__.__name__ == 'ClosedState'
     assert door_model.intent.__class__.__name__ == 'IdleIntent'
     # Set "open" intent
