@@ -2,5 +2,5 @@
   'use strict';
 
   angular
-    .module('myApp.doorDirective', ['myApp.doorService']);
+    .module('myApp.doorDirective', ['myApp.doorService', 'pascalprecht.translate']);
 }());

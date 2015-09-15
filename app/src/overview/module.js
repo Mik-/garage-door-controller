@@ -3,6 +3,6 @@
 
   angular
     .module('myApp.overview', ['ngRoute', 'myApp.doorListService',
-    'myApp.doorService']);
+      'myApp.doorService', 'pascalprecht.translate']);
 
 })();

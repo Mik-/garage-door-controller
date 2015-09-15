@@ -13,7 +13,8 @@ module.exports = {
     }, {
       src: [
         '<%= bower_dir %>/angular/angular.js',
-        '<%= bower_dir %>/angular-route/angular-route.js'
+        '<%= bower_dir %>/angular-route/angular-route.js',
+        '<%= bower_dir %>/angular-translate/angular-translate.min.js'
       ],
       dest: '<%= release_dir %>/js/libs.js'
     }]

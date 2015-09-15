@@ -5,9 +5,10 @@
     .module('myApp.doorDirective')
     .directive('door', DoorDirective);
 
-  function DoorDirective(doorService, $log) {
+  function DoorDirective(doorService, $log, $interval) {
     var doorId;
     var vm;
+    var hideTextInterval;
 
     return {
       restrict: 'E',
@@ -21,6 +22,13 @@
         scope.triggerDoor = triggerDoor;
         scope.setOpenIntent = setOpenIntent;
         scope.setCloseIntent = setCloseIntent;
+
+        element.on('$destroy', function () {
+          if (angular.isDefined(hideTextInterval)) {
+            $interval.cancel(hideTextInterval);
+            hideTextInterval = undefined;
+          }
+        })
 
         doorService.getDoorState(doorId)
           .then(function(data) {
@@ -41,13 +49,21 @@
       }
     }
 
+    function clearMessages() {
+      $interval.cancel(hideTextInterval);
+      hideTextInterval = undefined;
+
+      vm.errorText = '';
+      vm.infoText = '';
+    }
+
     function triggerDoor() {
       doorService.triggerDoor(doorId)
         .then(function() {
-          vm.infoText = 'Door triggered';
-          setTimeout(function() {
-            vm.infoText = '';
-          }, 5000);
+          clearMessages();
+          vm.infoText = 'DOOR_TRIGGERED';
+
+          hideTextInterval = $interval(clearMessages, 5000);
         })
         .catch(function(status) {
           $log.error('doorService.triggerDoor returns status ' + status);
@@ -58,10 +74,10 @@
     function setOpenIntent() {
       doorService.setOpenIntent(doorId)
         .then(function() {
-          vm.infoText = 'Intent "open" set';
-          setTimeout(function() {
-            vm.infoText = '';
-          }, 5000);
+          clearMessages();
+          vm.infoText = 'OPEN_INTENT_SET';
+
+          hideTextInterval = $interval(clearMessages, 5000);
         })
         .catch(function(status) {
           $log.error('doorService.setOpenIntent returns status ' + status);
@@ -72,10 +88,10 @@
     function setCloseIntent() {
       doorService.setCloseIntent(doorId)
         .then(function() {
-          vm.infoText = 'Intent "close" set';
-          setTimeout(function() {
-            vm.infoText = '';
-          }, 5000);
+          clearMessages();
+          vm.infoText = 'CLOSE_INTENT_SET';
+
+          hideTextInterval = $interval(clearMessages, 5000);
         })
         .catch(function(status) {
           $log.error('doorService.setCloseIntent returns status ' + status);

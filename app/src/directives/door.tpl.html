@@ -1,13 +1,19 @@
 <div class="door">
-  <span class="door__name">{{ doorId }}. Door name:
+  <span class="door__name">{{ doorId }}. {{ 'DOOR_NAME' | translate }}:
     {{ doorName }}</span>
-  <span ng-show="state">state:
+  <span ng-show="state">{{ 'STATE' | translate }}:
     {{ state }}</span>
-  <span ng-show="intent">intent:
+  <span ng-show="intent">{{ 'INTENT' | translate }}:
     {{ intent }}</span>
-  <a class="button" href="" ng-click="triggerDoor()">Trigger</a>
-  <div ng-show="state !== 'OpenState'" class="open-intent"><a href="" ng-click="setOpenIntent()" class="button">Open intent</a></div>
-  <div ng-show="state !== 'ClosedState'" class="close-intent"><a href="" ng-click="setCloseIntent()" class="button">Close intent</a></div>
-  <div ng-show="infoText" class="info-text">{{ infoText }}</div>
-  <div ng-show="errorText" class="error-text">{{ errorText }}</div>
+  <div class="open-intent" ng-show="state !== 'OpenState'">
+    <a class="button button__open" href="" ng-click="setOpenIntent()">{{ 'BUTTON_OPEN_DOOR' | translate }}</a>
+  </div>
+  <div class="close-intent" ng-show="state !== 'ClosedState'">
+    <a class="button button__close" href="" ng-click="setCloseIntent()">{{ 'BUTTON_CLOSE_DOOR' | translate }}</a>
+  </div>
+  <div class="trigger">
+    <a class="button button__trigger" href="" ng-click="triggerDoor()">{{ 'BUTTON_TRIGGER_DOOR' | translate }}</a>
+  </div>
+  <div class="info-text" ng-show="infoText">{{ infoText | translate }}</div>
+  <div class="error-text" ng-show="errorText">{{ errorText | translate }}</div>
 </div>
