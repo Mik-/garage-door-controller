@@ -63,6 +63,8 @@ class DoorState:
             door_list[id - 1].set_intent('Open')
         elif 'intent' in post_data and post_data['intent'] == 'close':
             door_list[id - 1].set_intent('Close')
+        elif 'intent' in post_data and post_data['intent'] == 'idle':
+            door_list[id - 1].set_intent('Idle')
         else:
             return web.notfound("Invalid post command!")
 

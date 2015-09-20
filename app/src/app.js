@@ -9,6 +9,7 @@
     'myApp.de_DE',
     'myApp.overview',
     'myApp.doorDirective',
+    'myApp.twoStageButton',
     'myApp.log'
   ]).
   config(['$routeProvider', '$translateProvider', function($routeProvider, $translateProvider) {

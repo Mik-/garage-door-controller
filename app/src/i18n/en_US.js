@@ -11,9 +11,11 @@
         INTENT:               'intent',
         CLOSE_INTENT_SET:     'Intent "close" set',
         OPEN_INTENT_SET:      'Intent "open" set',
+        IDLE_INTENT_SET:      'Intent "idle" gesetzt',
         DOOR_TRIGGERED:       'Door triggered',
         BUTTON_OPEN_DOOR:     'Open door',
         BUTTON_CLOSE_DOOR:    'Close door',
+        BUTTON_IDLE_INTENT:   'Stop intent',
         BUTTON_TRIGGER_DOOR:  'Trigger'
       })
     });

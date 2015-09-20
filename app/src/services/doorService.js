@@ -9,8 +9,7 @@
     var service = {
       getDoorState: getDoorState,
       triggerDoor: triggerDoor,
-      setOpenIntent: setOpenIntent,
-      setCloseIntent: setCloseIntent
+      setIntent: setIntent
     }
 
     return service;
@@ -43,24 +42,10 @@
       return deferred.promise;
     }
 
-    function setOpenIntent(index) {
+    function setIntent(index, intent) {
       var deferred = $q.defer();
 
-      $http.post('/door/' + index, '{ "intent": "open" }')
-        .success(function (doorState) {
-          deferred.resolve();
-        })
-        .error(function (data, status) {
-          deferred.reject(status);
-        });
-
-      return deferred.promise;
-    }
-
-    function setCloseIntent(index) {
-      var deferred = $q.defer();
-
-      $http.post('/door/' + index, '{ "intent": "close" }')
+      $http.post('/door/' + index, '{ "intent": "' + intent + '" }')
         .success(function (doorState) {
           deferred.resolve();
         })

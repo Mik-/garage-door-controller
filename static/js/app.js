@@ -3,6 +3,9 @@
 
   angular
     .module('myApp.doorDirective', ['myApp.doorService', 'pascalprecht.translate']);
+
+  angular
+    .module('myApp.twoStageButton', []);
 }());
 
 (function () {
@@ -58,6 +61,7 @@
     'myApp.de_DE',
     'myApp.overview',
     'myApp.doorDirective',
+    'myApp.twoStageButton',
     'myApp.log'
   ]).
   config(['$routeProvider', '$translateProvider', function($routeProvider, $translateProvider) {
@@ -73,7 +77,7 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('directives/door.tpl.html',
-    "<div class=door><span class=door__name>{{ doorId }}. {{ 'DOOR_NAME' | translate }}: {{ doorName }}</span> <span ng-show=state>{{ 'STATE' | translate }}: {{ state }}</span> <span ng-show=intent>{{ 'INTENT' | translate }}: {{ intent }}</span><div class=open-intent ng-show=\"state !== 'OpenState'\"><a class=\"button button__open\" href=\"\" ng-click=setOpenIntent()>{{ 'BUTTON_OPEN_DOOR' | translate }}</a></div><div class=close-intent ng-show=\"state !== 'ClosedState'\"><a class=\"button button__close\" href=\"\" ng-click=setCloseIntent()>{{ 'BUTTON_CLOSE_DOOR' | translate }}</a></div><div class=trigger><a class=\"button button__trigger\" href=\"\" ng-click=triggerDoor()>{{ 'BUTTON_TRIGGER_DOOR' | translate }}</a></div><div class=info-text ng-show=infoText>{{ infoText | translate }}</div><div class=error-text ng-show=errorText>{{ errorText | translate }}</div></div>"
+    "<div class=door><span class=door__name>{{ doorId }}. {{ 'DOOR_NAME' | translate }}: {{ doorName }}</span> <span ng-show=state>{{ 'STATE' | translate }}: {{ state }}</span> <span ng-show=intent>{{ 'INTENT' | translate }}: {{ intent }}</span><div class=open-intent ng-show=\"state !== 'OpenState'\"><two-stage-button inactive-class=\"button button__open\" active-class=\"button button__open\" click-action=setOpenIntent()>{{ 'BUTTON_OPEN_DOOR' | translate }}</two-stage-button></div><div class=close-intent ng-show=\"state !== 'ClosedState'\"><two-stage-button inactive-class=\"button button__close\" active-class=\"button button__close\" click-action=setCloseIntent()>{{ 'BUTTON_CLOSE_DOOR' | translate }}</two-stage-button></div><div class=idle-intent ng-show=\"intent !== 'IdleIntent'\"><two-stage-button inactive-class=\"button button__idle\" active-class=\"button button__idle\" click-action=setIdleIntent()>{{ 'BUTTON_IDLE_INTENT' | translate }}</two-stage-button></div><div class=trigger><two-stage-button inactive-class=\"button button__trigger\" active-class=\"button button__trigger\" click-action=triggerDoor()>{{ 'BUTTON_TRIGGER_DOOR' | translate }}</two-stage-button></div><div class=info-text ng-show=infoText>{{ infoText | translate }}</div><div class=error-text ng-show=errorText>{{ errorText | translate }}</div></div>"
   );
 
 
@@ -97,10 +101,11 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
     .module('myApp.doorDirective')
     .directive('door', DoorDirective);
 
-  function DoorDirective(doorService, $log, $interval) {
+  function DoorDirective(doorService, $log, $interval, $timeout) {
     var doorId;
     var vm;
-    var hideTextInterval;
+    var hideMessageTimeout;
+    var updateInterval;
 
     return {
       restrict: 'E',
@@ -114,83 +119,182 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
         scope.triggerDoor = triggerDoor;
         scope.setOpenIntent = setOpenIntent;
         scope.setCloseIntent = setCloseIntent;
+        scope.setIdleIntent = setIdleIntent;
 
         element.on('$destroy', function () {
-          if (angular.isDefined(hideTextInterval)) {
-            $interval.cancel(hideTextInterval);
-            hideTextInterval = undefined;
+          if (hideMessageTimeout) {
+            $timeout.cancel(hideMessageTimeout);
           }
-        })
 
-        doorService.getDoorState(doorId)
-          .then(function(data) {
-            $log.debug('doorDirective: ' + JSON.stringify(data));
-            scope.doorName = data.name;
-            scope.state = data.state;
-            scope.intent = data.intent;
+          if (angular.isDefined(updateInterval)) {
+            $interval.cancel(updateInterval);
+          }
+        });
 
-            $log.debug(JSON.stringify(data));
-          })
-          .catch(function(status) {
-            scope.doorName = null;
-            scope.state = null;
-            scope.intent = null;
-
-            $log.error('doorService.getDoorState returns status ' + status);
-          });
+        updateDoorState();
+        updateInterval = $interval(updateDoorState, 2000);
       }
     }
 
-    function clearMessages() {
-      $interval.cancel(hideTextInterval);
-      hideTextInterval = undefined;
+    function updateDoorState() {
+      doorService.getDoorState(vm.doorId)
+        .then(function(data) {
+          vm.doorName = data.name;
+          vm.state = data.state;
+          vm.intent = data.intent;
+        })
+        .catch(function(status) {
+          vm.doorName = null;
+          vm.state = null;
+          vm.intent = null;
 
+          $log.error('doorService.getDoorState returns status ' + status);
+          showMessage('doorService.getDoorState returns status ' + status, 'error');
+        });
+    }
+
+    function clearMessages() {
       vm.errorText = '';
       vm.infoText = '';
+    }
+
+    function showMessage(messageText, messageType) {
+      if (hideMessageTimeout) {
+        $timeout.cancel(hideMessageTimeout);
+      }
+
+      if (messageType === 'info') {
+        vm.infoText = messageText;
+      }
+      else if (messageType === 'error') {
+        vm.errorText = messageText;
+      }
+
+      hideMessageTimeout = $timeout(clearMessages, 5000);
     }
 
     function triggerDoor() {
       doorService.triggerDoor(doorId)
         .then(function() {
-          clearMessages();
-          vm.infoText = 'DOOR_TRIGGERED';
-
-          hideTextInterval = $interval(clearMessages, 5000);
+          showMessage('DOOR_TRIGGERED', 'info');
         })
         .catch(function(status) {
           $log.error('doorService.triggerDoor returns status ' + status);
-          vm.errorText = 'doorService.triggerDoor returns status ' + status;
+          showMessage('doorService.triggerDoor returns status ' + status, 'error');
         })
     }
 
     function setOpenIntent() {
-      doorService.setOpenIntent(doorId)
+      doorService.setIntent(doorId, 'open')
         .then(function() {
-          clearMessages();
-          vm.infoText = 'OPEN_INTENT_SET';
-
-          hideTextInterval = $interval(clearMessages, 5000);
+          showMessage('OPEN_INTENT_SET', 'info');
         })
         .catch(function(status) {
           $log.error('doorService.setOpenIntent returns status ' + status);
-          vm.errorText = 'doorService.setOpenIntent returns status ' + status;
+          showMessage('doorService.setOpenIntent returns status ' + status, 'error');
         })
     }
 
     function setCloseIntent() {
-      doorService.setCloseIntent(doorId)
+      doorService.setIntent(doorId, 'close')
         .then(function() {
-          clearMessages();
-          vm.infoText = 'CLOSE_INTENT_SET';
-
-          hideTextInterval = $interval(clearMessages, 5000);
+          showMessage('CLOSE_INTENT_SET', 'info');
         })
         .catch(function(status) {
           $log.error('doorService.setCloseIntent returns status ' + status);
-          vm.errorText = 'doorService.setCloseIntent returns status ' + status;
+          showMessage('doorService.setCloseIntent returns status ' + status, 'error');
+        })
+    }
+
+    function setIdleIntent() {
+      doorService.setIntent(doorId, 'idle')
+        .then(function() {
+          showMessage('IDLE_INTENT_SET', 'info');
+        })
+        .catch(function(status) {
+          $log.error('doorService.setIdleIntent returns status ' + status);
+          showMessage('doorService.setIdleIntent returns status ' + status, 'error');
         })
     }
   }
+}());
+
+(function() {
+  'use strict';
+
+  angular
+    .module('myApp.twoStageButton')
+    .directive('twoStageButton', TwoStageButton);
+
+
+  function TwoStageButton($log, $timeout) {
+    return {
+      restrict: 'E',
+      template: '<a href="" ng-click="onButtonClick()">' +
+        '<i ng-hide="active" class="fa fa-toggle-off"></i>' +
+        '<i ng-show="active" class="fa fa-toggle-on"></i>&nbsp;' +
+        '<span ng-transclude></span></a>',
+      transclude: true,
+      scope: {
+        clickAction: '&',
+        inactiveClass: '@',
+        activeClass: '@'
+      },
+      link: function (scope, element, attrs) {
+        scope.clickCount = 0;
+        scope.active = false;
+
+        scope.deactivate = function deactivate() {
+          scope.clickCount = 0;
+          if (scope.activeClass) {
+            element.find('a').removeClass(scope.activeClass);
+          }
+          if (scope.inactiveClass) {
+            element.find('a').addClass(scope.inactiveClass);
+          }
+          scope.active = false;
+        }
+
+        scope.activate = function activate() {
+          if (scope.inactiveClass) {
+            element.find('a').removeClass(scope.inactiveClass);
+          }
+          if (scope.activeClass) {
+            element.find('a').addClass(scope.activeClass);
+          }
+          scope.active = true;
+          $timeout(function () {
+              scope.deactivate();
+          }, 5000);
+        }
+
+        scope.deactivate();
+
+        scope.onButtonClick = function () {
+          scope.clickCount = scope.clickCount + 1;
+
+          $log.debug('TwoStageButton: clickCount = ' + scope.clickCount);
+
+          if (scope.clickCount > 0) {
+            scope.activate();
+          }
+
+          if (scope.clickCount > 1) {
+            scope.deactivate();
+
+            if (scope.clickAction) {
+              $log.debug('clickAction() fired.');
+              scope.clickAction();
+            }
+            else {
+              $log.error('No click-action defined in directive TwoStageButton!');
+            }
+          }
+        }
+      }
+    }
+  }
+
 }());
 
 (function() {
@@ -206,9 +310,11 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
         INTENT:               'Ziel',
         CLOSE_INTENT_SET:     'Ziel "Geschlossen" gesetzt',
         OPEN_INTENT_SET:      'Ziel "Offen" gesetzt',
+        IDLE_INTENT_SET:      'Ziel "Leerlauf" gesetzt',
         DOOR_TRIGGERED:       'Tor angestoßen',
         BUTTON_OPEN_DOOR:     'Tor öffnen',
         BUTTON_CLOSE_DOOR:    'Tor schließen',
+        BUTTON_IDLE_INTENT:   'Ziel stoppen',
         BUTTON_TRIGGER_DOOR:  'Taster'
       })
     });
@@ -227,9 +333,11 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
         INTENT:               'intent',
         CLOSE_INTENT_SET:     'Intent "close" set',
         OPEN_INTENT_SET:      'Intent "open" set',
+        IDLE_INTENT_SET:      'Intent "idle" gesetzt',
         DOOR_TRIGGERED:       'Door triggered',
         BUTTON_OPEN_DOOR:     'Open door',
         BUTTON_CLOSE_DOOR:    'Close door',
+        BUTTON_IDLE_INTENT:   'Stop intent',
         BUTTON_TRIGGER_DOOR:  'Trigger'
       })
     });
@@ -368,8 +476,7 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
     var service = {
       getDoorState: getDoorState,
       triggerDoor: triggerDoor,
-      setOpenIntent: setOpenIntent,
-      setCloseIntent: setCloseIntent
+      setIntent: setIntent
     }
 
     return service;
@@ -402,24 +509,10 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
       return deferred.promise;
     }
 
-    function setOpenIntent(index) {
+    function setIntent(index, intent) {
       var deferred = $q.defer();
 
-      $http.post('/door/' + index, '{ "intent": "open" }')
-        .success(function (doorState) {
-          deferred.resolve();
-        })
-        .error(function (data, status) {
-          deferred.reject(status);
-        });
-
-      return deferred.promise;
-    }
-
-    function setCloseIntent(index) {
-      var deferred = $q.defer();
-
-      $http.post('/door/' + index, '{ "intent": "close" }')
+      $http.post('/door/' + index, '{ "intent": "' + intent + '" }')
         .success(function (doorState) {
           deferred.resolve();
         })

@@ -5,10 +5,11 @@
     .module('myApp.doorDirective')
     .directive('door', DoorDirective);
 
-  function DoorDirective(doorService, $log, $interval) {
+  function DoorDirective(doorService, $log, $interval, $timeout) {
     var doorId;
     var vm;
-    var hideTextInterval;
+    var hideMessageTimeout;
+    var updateInterval;
 
     return {
       restrict: 'E',
@@ -22,80 +23,101 @@
         scope.triggerDoor = triggerDoor;
         scope.setOpenIntent = setOpenIntent;
         scope.setCloseIntent = setCloseIntent;
+        scope.setIdleIntent = setIdleIntent;
 
         element.on('$destroy', function () {
-          if (angular.isDefined(hideTextInterval)) {
-            $interval.cancel(hideTextInterval);
-            hideTextInterval = undefined;
+          if (hideMessageTimeout) {
+            $timeout.cancel(hideMessageTimeout);
           }
-        })
 
-        doorService.getDoorState(doorId)
-          .then(function(data) {
-            $log.debug('doorDirective: ' + JSON.stringify(data));
-            scope.doorName = data.name;
-            scope.state = data.state;
-            scope.intent = data.intent;
+          if (angular.isDefined(updateInterval)) {
+            $interval.cancel(updateInterval);
+          }
+        });
 
-            $log.debug(JSON.stringify(data));
-          })
-          .catch(function(status) {
-            scope.doorName = null;
-            scope.state = null;
-            scope.intent = null;
-
-            $log.error('doorService.getDoorState returns status ' + status);
-          });
+        updateDoorState();
+        updateInterval = $interval(updateDoorState, 2000);
       }
     }
 
-    function clearMessages() {
-      $interval.cancel(hideTextInterval);
-      hideTextInterval = undefined;
+    function updateDoorState() {
+      doorService.getDoorState(vm.doorId)
+        .then(function(data) {
+          vm.doorName = data.name;
+          vm.state = data.state;
+          vm.intent = data.intent;
+        })
+        .catch(function(status) {
+          vm.doorName = null;
+          vm.state = null;
+          vm.intent = null;
 
+          $log.error('doorService.getDoorState returns status ' + status);
+          showMessage('doorService.getDoorState returns status ' + status, 'error');
+        });
+    }
+
+    function clearMessages() {
       vm.errorText = '';
       vm.infoText = '';
+    }
+
+    function showMessage(messageText, messageType) {
+      if (hideMessageTimeout) {
+        $timeout.cancel(hideMessageTimeout);
+      }
+
+      if (messageType === 'info') {
+        vm.infoText = messageText;
+      }
+      else if (messageType === 'error') {
+        vm.errorText = messageText;
+      }
+
+      hideMessageTimeout = $timeout(clearMessages, 5000);
     }
 
     function triggerDoor() {
       doorService.triggerDoor(doorId)
         .then(function() {
-          clearMessages();
-          vm.infoText = 'DOOR_TRIGGERED';
-
-          hideTextInterval = $interval(clearMessages, 5000);
+          showMessage('DOOR_TRIGGERED', 'info');
         })
         .catch(function(status) {
           $log.error('doorService.triggerDoor returns status ' + status);
-          vm.errorText = 'doorService.triggerDoor returns status ' + status;
+          showMessage('doorService.triggerDoor returns status ' + status, 'error');
         })
     }
 
     function setOpenIntent() {
-      doorService.setOpenIntent(doorId)
+      doorService.setIntent(doorId, 'open')
         .then(function() {
-          clearMessages();
-          vm.infoText = 'OPEN_INTENT_SET';
-
-          hideTextInterval = $interval(clearMessages, 5000);
+          showMessage('OPEN_INTENT_SET', 'info');
         })
         .catch(function(status) {
           $log.error('doorService.setOpenIntent returns status ' + status);
-          vm.errorText = 'doorService.setOpenIntent returns status ' + status;
+          showMessage('doorService.setOpenIntent returns status ' + status, 'error');
         })
     }
 
     function setCloseIntent() {
-      doorService.setCloseIntent(doorId)
+      doorService.setIntent(doorId, 'close')
         .then(function() {
-          clearMessages();
-          vm.infoText = 'CLOSE_INTENT_SET';
-
-          hideTextInterval = $interval(clearMessages, 5000);
+          showMessage('CLOSE_INTENT_SET', 'info');
         })
         .catch(function(status) {
           $log.error('doorService.setCloseIntent returns status ' + status);
-          vm.errorText = 'doorService.setCloseIntent returns status ' + status;
+          showMessage('doorService.setCloseIntent returns status ' + status, 'error');
+        })
+    }
+
+    function setIdleIntent() {
+      doorService.setIntent(doorId, 'idle')
+        .then(function() {
+          showMessage('IDLE_INTENT_SET', 'info');
+        })
+        .catch(function(status) {
+          $log.error('doorService.setIdleIntent returns status ' + status);
+          showMessage('doorService.setIdleIntent returns status ' + status, 'error');
         })
     }
   }

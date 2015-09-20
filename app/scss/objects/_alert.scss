@@ -1,0 +1,16 @@
+.alert {
+  color: $alert-text-color;
+  padding: 1em;
+  border-radius: 3px;
+  font-size: 75%;
+}
+
+.error-text {
+  @extend .alert;
+  background-color: $warning-color;
+}
+
+.info-text {
+  @extend .alert;
+  background-color: $success-color;
+}

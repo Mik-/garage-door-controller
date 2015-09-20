@@ -7,7 +7,7 @@ module.exports = {
   },
   sass: {
     files: '<%= source_dir %>/scss/**/*.scss',
-    tasks: ['sass:release', 'autoprefixer:release', 'cssmin:release'],
+    tasks: ['sass:release', 'autoprefixer:release', 'concat:fontawesome', 'cssmin:release'],
     options: {
       spawn: false
     }
