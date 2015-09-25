@@ -6,19 +6,19 @@
   <span ng-show="intent">{{ 'INTENT' | translate }}:
     {{ intent }}</span>
   <div class="open-intent" ng-show="state !== 'OpenState'">
-    <two-stage-button inactive-class="button button__open" active-class="button button__open"
+    <two-stage-button inactive-class="button button__open" active-class="button button__open button__armed"
       click-action="setOpenIntent()">{{ 'BUTTON_OPEN_DOOR' | translate }}</two-stage-button>
   </div>
   <div class="close-intent" ng-show="state !== 'ClosedState'">
-    <two-stage-button inactive-class="button button__close" active-class="button button__close"
+    <two-stage-button inactive-class="button button__close" active-class="button button__close button__armed"
       click-action="setCloseIntent()">{{ 'BUTTON_CLOSE_DOOR' | translate }}</two-stage-button>
   </div>
   <div class="idle-intent" ng-show="intent !== 'IdleIntent'">
-    <two-stage-button inactive-class="button button__idle" active-class="button button__idle"
+    <two-stage-button inactive-class="button button__idle" active-class="button button__idle button__armed"
       click-action="setIdleIntent()">{{ 'BUTTON_IDLE_INTENT' | translate }}</two-stage-button>
   </div>
   <div class="trigger">
-    <two-stage-button inactive-class="button button__trigger" active-class="button button__trigger"
+    <two-stage-button inactive-class="button button__trigger" active-class="button button__trigger button__armed"
       click-action="triggerDoor()">{{ 'BUTTON_TRIGGER_DOOR' | translate }}</two-stage-button>
   </div>
 

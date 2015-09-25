@@ -1,10 +1,14 @@
 .button {
   background-color: $button-background-color;
   color: $button-font-color;
-  padding: 1em 2em 1em;
+  padding: 0.75em 1.5em 0.75em;
   margin: 0.5em;
   display: inline-block;
   text-decoration: none;
+  border-style: solid;
+  border-width: 5px;
+  border-color: $button-background-color;
+
 
   &__inactive {
     color: $button-inactive-font-color;
@@ -12,5 +16,9 @@
 
   &__idle {
     background-color: $warning-color;
+  }
+
+  &__armed {
+    border-color: $warning-color;
   }
 }
