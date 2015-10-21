@@ -1,0 +1,19 @@
+<form ng-hide="vm.loggedIn" ng-submit="vm.doLogin()" id="login_form">
+  <label>
+    Username
+    <input name="username" type="text" ng-model="vm.username">
+  </label>
+  <label>
+    Password
+    <input name="password" type="password" ng-model="vm.password">
+  </label>
+
+  <button type="submit" class="button">{{ 'BUTTON_LOGIN' | translate }}</button>
+</form>
+<div ng-show="vm.loggedIn">
+  {{ 'LOGGED_IN' | translate }}.
+  <a href="" ng-click="vm.doLogout()" class="button">{{ 'BUTTON_LOGOUT' | translate }}</a>
+</div>
+
+<div class="info-text" ng-show="vm.infoText">{{ vm.infoText | translate }}</div>
+<div class="error-text" ng-show="vm.errorText">{{ vm.errorText | translate }}</div>

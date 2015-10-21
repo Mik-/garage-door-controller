@@ -9,5 +9,11 @@
       "triggerTime": 1,
       "accelerateTime": 2
     }
+  ],
+  "allowed-users": [
+    {
+      "username": "mik",
+      "password": "pass1"
+    }
   ]
 }

@@ -7,6 +7,8 @@ from optparse import OptionParser
 import sys
 import json
 import importlib
+import re
+import base64
 
 web.config.debug = False
 
@@ -22,59 +24,107 @@ logger.addHandler(filehandler)
 
 config_filename = 'config.json'
 door_list = []
+allowed_users = []
 
 urls = (
     '/doors', 'ListDoors',
     '/door/(.*)', 'DoorState',
     '/log', 'ShowLog',
+    '/session', 'SessionManager',
     '/', 'Index'
 )
 
+app = web.application(urls, globals())
+
+sessionStore = web.session.DiskStore('sessions')
+session = web.session.Session(app, sessionStore, initializer={'login': 0})
+
+
 class ListDoors:
     def GET(self):
-        response = '{"doors": ['
+        if session.login == 1:
+            response = '{"doors": ['
 
-        i = 1
-        for door in door_list:
-            if i <> 1:
-                response += ','
-            response += '{"id": "%d", "name": "%s"}' % (i, door.name)
-            i += 1
+            i = 1
+            for door in door_list:
+                if i <> 1:
+                    response += ','
+                response += '{"id": "%d", "name": "%s"}' % (i, door.name)
+                i += 1
 
-        response += ']}'
-        return response
+            response += ']}'
+            return response
+        else:
+            return '{"error": "Not logged in!"}';
 
 class DoorState:
     def GET(self, door_id):
-        id = int(door_id)
-        response = '{"name": "%s","state": "%s","intent": "%s"}' % (
-            door_list[id - 1].name, door_list[id - 1].state.__class__.__name__,
-            door_list[id - 1].intent.__class__.__name__)
+        if session.login == 1:
+            id = int(door_id)
+            response = '{"name": "%s","state": "%s","intent": "%s"}' % (
+                door_list[id - 1].name, door_list[id - 1].state.__class__.__name__,
+                door_list[id - 1].intent.__class__.__name__)
+        else:
+            response = '{"error": "not logged in"}'
+
         return response
 
     def POST(self, door_id):
-        id = int(door_id)
+        if session.login == 1:
+            id = int(door_id)
 
-        post_data = json.loads(web.data())
+            post_data = json.loads(web.data())
 
-        if 'trigger' in post_data and post_data['trigger'] == True:
-            door_list[id - 1].start_door_signal()
-        elif 'intent' in post_data and post_data['intent'] == 'open':
-            door_list[id - 1].set_intent('Open')
-        elif 'intent' in post_data and post_data['intent'] == 'close':
-            door_list[id - 1].set_intent('Close')
-        elif 'intent' in post_data and post_data['intent'] == 'idle':
-            door_list[id - 1].set_intent('Idle')
+            if 'trigger' in post_data and post_data['trigger'] == True:
+                door_list[id - 1].start_door_signal()
+            elif 'intent' in post_data and post_data['intent'] == 'open':
+                door_list[id - 1].set_intent('Open')
+            elif 'intent' in post_data and post_data['intent'] == 'close':
+                door_list[id - 1].set_intent('Close')
+            elif 'intent' in post_data and post_data['intent'] == 'idle':
+                door_list[id - 1].set_intent('Idle')
+            else:
+                return web.notfound("Invalid post command!")
         else:
-            return web.notfound("Invalid post command!")
+            return '{"error": "not logged in"}'
 
 class ShowLog:
     def GET(self):
-        try:
-            f = open('garage.log', 'r');
-            return f.read()
-        except IOError:
-            return 'can not open garage.log'
+        if session.login == 1:
+            try:
+                f = open('garage.log', 'r');
+                return f.read()
+            except IOError:
+                return 'can not open garage.log'
+        else:
+            return 'Not logged in!'
+
+class SessionManager:
+    def GET(self):
+        if session.login == 0:
+            response = '{"loggedIn": false }'
+        else:
+            response = '{"loggedIn": true }'
+        return response
+
+    def POST(self):
+        username = '-'
+        password = '-'
+
+        post_data = json.loads(web.data())
+
+        if 'logout' in post_data and post_data['logout'] == True:
+            session.login = 0
+        else:
+            if 'username' in post_data:
+                username = post_data['username']
+            if 'password' in post_data:
+                password = post_data['password']
+
+            if (username, password) in allowed_users:
+                session.login = 1
+            else:
+                session.login = 0
 
 class Index:
     def GET(self):
@@ -102,6 +152,10 @@ def init():
             door_config["triggerTime"], door_config["accelerateTime"])
         door_list.append(new_door)
 
+    for user in config_data["allowed-users"]:
+        allowed_users.append((user["username"], user["password"]))
+
+
 if __name__ == "__main__":
     # Parse the command line options
     parser = OptionParser()
@@ -116,8 +170,6 @@ if __name__ == "__main__":
     sys.argv = args
 
     init()
-
-    app = web.application(urls, globals())
 
     app.run()
 

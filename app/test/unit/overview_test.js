@@ -6,6 +6,7 @@ describe('myApp.overview module', function() {
   // beforeEach(module('myApp.doorService'));
   // beforeEach(module('pascalprecht.translate'));
   beforeEach(module('myApp.overview'));
+  beforeEach(module('myApp.sessionService'));
 
   describe('overview controller', function(){
 

@@ -10,4 +10,7 @@
   angular
     .module('myApp.logService', []);
 
+  angular
+    .module('myApp.sessionService', []);
+
 }());

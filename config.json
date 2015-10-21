@@ -12,5 +12,11 @@
       "triggerTime": 1.5,
       "accelerateTime": 4
     }
+  ],
+  "allowed-users": [
+    {
+      "username": "user",
+      "password": "pass1"
+    }
   ]
 }

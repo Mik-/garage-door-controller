@@ -31,6 +31,15 @@
   'use strict';
 
   angular
+    .module('myApp.login', ['ngRoute', 'myApp.sessionService',
+      'pascalprecht.translate']);
+
+})();
+
+(function () {
+  'use strict';
+
+  angular
     .module('myApp.overview', ['ngRoute', 'myApp.doorListService',
       'myApp.doorService', 'pascalprecht.translate']);
 
@@ -48,6 +57,9 @@
   angular
     .module('myApp.logService', []);
 
+  angular
+    .module('myApp.sessionService', []);
+
 }());
 
 (function() {
@@ -60,6 +72,7 @@
     'myApp.en_US',
     'myApp.de_DE',
     'myApp.overview',
+    'myApp.login',
     'myApp.doorDirective',
     'myApp.twoStageButton',
     'myApp.log'
@@ -85,6 +98,11 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
     "<pre>\n" +
     "{{ vm.log }}\n" +
     "</pre>"
+  );
+
+
+  $templateCache.put('login/login.tpl.html',
+    "<form ng-hide=vm.loggedIn ng-submit=vm.doLogin() id=login_form><label>Username <input name=username ng-model=vm.username></label><label>Password <input name=password type=password ng-model=vm.password></label><button type=submit class=button>{{ 'BUTTON_LOGIN' | translate }}</button></form><div ng-show=vm.loggedIn>{{ 'LOGGED_IN' | translate }}. <a href=\"\" ng-click=vm.doLogout() class=button>{{ 'BUTTON_LOGOUT' | translate }}</a></div><div class=info-text ng-show=vm.infoText>{{ vm.infoText | translate }}</div><div class=error-text ng-show=vm.errorText>{{ vm.errorText | translate }}</div>"
   );
 
 
@@ -305,6 +323,7 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
       $translateProvider.translations('de_DE', {
         DOOR_LIST:            'Torliste',
         LOG:                  'Log',
+        SESSION:              'Anmeldung',
         DOOR_NAME:            'Tor',
         STATE:                'Status',
         INTENT:               'Ziel',
@@ -312,10 +331,17 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
         OPEN_INTENT_SET:      'Ziel "Offen" gesetzt',
         IDLE_INTENT_SET:      'Ziel "Leerlauf" gesetzt',
         DOOR_TRIGGERED:       'Tor angestoßen',
+        LOGGED_IN:            'Du bist angemeldet',
+        LOGIN_SUCCESSFUL:     'Login erfoglreich.',
+        LOGIN_FAILED:         'Login fehlgeschlagen!',
+        LOGOUT_SUCCESSFUL:    'Logout erfoglreich.',
+        LOGOUT_FAILED:        'Logout fehlgeschlagen!',
         BUTTON_OPEN_DOOR:     'Tor öffnen',
         BUTTON_CLOSE_DOOR:    'Tor schließen',
         BUTTON_IDLE_INTENT:   'Ziel stoppen',
-        BUTTON_TRIGGER_DOOR:  'Taster'
+        BUTTON_TRIGGER_DOOR:  'Taster',
+        BUTTON_LOGIN:         'Anmelden',
+        BUTTON_LOGOUT:        'Abmelden'
       })
     });
 }());
@@ -328,6 +354,7 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
       $translateProvider.translations('en_US', {
         DOOR_LIST:            'Doorlist',
         LOG:                  'Log',
+        SESSION:              'Session',
         DOOR_NAME:            'Door name',
         STATE:                'state',
         INTENT:               'intent',
@@ -335,10 +362,17 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
         OPEN_INTENT_SET:      'Intent "open" set',
         IDLE_INTENT_SET:      'Intent "idle" gesetzt',
         DOOR_TRIGGERED:       'Door triggered',
+        LOGGED_IN:            'You are logged in',
+        LOGIN_SUCCESSFUL:     'Login successful.',
+        LOGIN_FAILED:         'Login failed!',
+        LOGOUT_SUCCESSFUL:    'Logout successful.',
+        LOGOUT_FAILED:        'Logout failed!',
         BUTTON_OPEN_DOOR:     'Open door',
         BUTTON_CLOSE_DOOR:    'Close door',
         BUTTON_IDLE_INTENT:   'Stop intent',
-        BUTTON_TRIGGER_DOOR:  'Trigger'
+        BUTTON_TRIGGER_DOOR:  'Trigger',
+        BUTTON_LOGIN:         'Login',
+        BUTTON_LOGOUT:        'Logout'
       })
     });
 }());
@@ -384,6 +418,116 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
   'use strict';
 
   angular
+    .module('myApp.login')
+    .config(['$routeProvider', function($routeProvider) {
+      $routeProvider.when('/login', {
+        templateUrl: 'login/login.tpl.html',
+        controller: 'LoginCtrl',
+        controllerAs: 'vm'
+      });
+    }]);
+
+  angular
+    .module('myApp.login')
+    .controller('LoginCtrl', ['sessionService', '$log', '$timeout', '$q', LoginCtrl]);
+
+  function LoginCtrl(sessionService, $log, $timeout, $q) {
+    var vm = this;
+    var hideMessageTimeout;
+
+    vm.doLogin = doLogin;
+    vm.doLogout = doLogout;
+    vm.loggedIn = false;
+
+    activate();
+
+    // ------------------
+
+    function clearMessages() {
+      vm.errorText = '';
+      vm.infoText = '';
+    }
+
+    function showMessage(messageText, messageType) {
+      if (hideMessageTimeout) {
+        $timeout.cancel(hideMessageTimeout);
+      }
+
+      if (messageType === 'info') {
+        vm.infoText = messageText;
+      }
+      else if (messageType === 'error') {
+        vm.errorText = messageText;
+      }
+
+      hideMessageTimeout = $timeout(clearMessages, 5000);
+    }
+
+    function getSessionState () {
+      var deferred = $q.defer();
+
+      sessionService.getLoginState()
+        .then(function(data) {
+          vm.loginState = data;
+          vm.loggedIn = vm.loginState.loggedIn;
+        })
+        .catch(function(status) {
+          vm.loginState = [];
+          $log.error('doorListService returns status ' + status);
+        })
+        .finally(function () {
+          deferred.resolve(vm.loggedIn);
+        });
+
+      return deferred.promise;
+    }
+
+    function activate() {
+        getSessionState();
+    }
+
+    function doLogin() {
+      sessionService.login(vm.username, vm.password)
+        .then(function() {
+          getSessionState()
+            .then(function () {
+              if (vm.loggedIn === true) {
+                showMessage('LOGIN_SUCCESSFUL', 'info');
+              } else {
+                showMessage('LOGIN_FAILED', 'error');
+              }
+            });
+        })
+        .catch(function(status) {
+          $log.error('sessionService.login returns status ' + status);
+          vm.result = 'sessionService.login returns status ' + status;
+        })
+    }
+
+    function doLogout() {
+      sessionService.logout()
+        .then(function() {
+          getSessionState()
+            .then(function () {
+              if (vm.loggedIn === false) {
+                showMessage('LOGOUT_SUCCESSFUL', 'info');
+              } else {
+                showMessage('LOGOUT_FAILED', 'error');
+              }
+            });
+        })
+        .catch(function(status) {
+          $log.error('sessionService.logout returns status ' + status);
+          vm.result = 'sessionService.logout returns status ' + status;
+        })
+    }
+  }
+})();
+
+(function() {
+  'use strict';
+
+  angular
     .module('myApp.overview')
     .config(['$routeProvider', function($routeProvider) {
       $routeProvider.when('/overview', {
@@ -395,9 +539,10 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
 
   angular
     .module('myApp.overview')
-    .controller('OverviewCtrl', ['doorListService', 'doorService', '$log', OverviewCtrl]);
+    .controller('OverviewCtrl', ['doorListService', 'doorService',
+      'sessionService', '$location', '$log', OverviewCtrl]);
 
-  function OverviewCtrl(doorListService, doorService, $log) {
+  function OverviewCtrl(doorListService, doorService, sessionService, $location, $log) {
     var vm = this;
 
     vm.triggerDoor = triggerDoor;
@@ -407,15 +552,26 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
     // ------------------
 
     function activate() {
-      doorListService.getDoorList()
-        .then(function(data) {
-          vm.doorList = data;
-          $log.debug(JSON.stringify(vm.doorList));
+      sessionService.getLoginState()
+        .then(function (data) {
+          if (data.loggedIn == true) {
+            doorListService.getDoorList()
+              .then(function(data) {
+                vm.doorList = data;
+                $log.debug(JSON.stringify(vm.doorList));
+              })
+              .catch(function(status) {
+                vm.doorList = [];
+                $log.error('doorListService returns status ' + status);
+              });
+          } else {
+            // Not logged in. Redirect to login page
+            $location.path('/login');
+          }
         })
-        .catch(function(status) {
+        .catch(function (status) {
           vm.doorList = [];
-          $log.error('doorListService returns status ' + status);
-        });
+        })
     }
 
     function triggerDoor(index) {
@@ -547,6 +703,66 @@ angular.module('myApp').run(['$templateCache', function($templateCache) {
           deferred.resolve(log);
         })
         .error(function(data, status) {
+          deferred.reject(status);
+        });
+
+      return deferred.promise;
+    }
+  }
+})();
+
+(function () {
+  'use strict';
+
+  angular
+    .module('myApp.sessionService')
+    .factory('sessionService', sessionService);
+
+  function sessionService($http, $rootScope, $log, $q) {
+    var service = {
+      getLoginState: getLoginState,
+      login: login,
+      logout: logout
+    }
+
+    return service;
+
+    function getLoginState() {
+      var deferred = $q.defer();
+
+      $http.get('/session')
+        .success(function (loginState) {
+          deferred.resolve(loginState);
+        })
+        .error(function (data, status) {
+          deferred.reject(status);
+        });
+
+      return deferred.promise;
+    }
+
+    function login(username, password) {
+      var deferred = $q.defer();
+
+      $http.post('/session', '{ "username": "' + username + '", "password": "' + password + '" }')
+        .success(function (loginState) {
+          deferred.resolve(loginState);
+        })
+        .error(function (data, status) {
+          deferred.reject(status);
+        });
+
+      return deferred.promise;
+    }
+
+    function logout() {
+      var deferred = $q.defer();
+
+      $http.post('/session', '{ "logout": true }')
+        .success(function (loginState) {
+          deferred.resolve(loginState);
+        })
+        .error(function (data, status) {
           deferred.reject(status);
         });
 

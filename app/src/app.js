@@ -8,6 +8,7 @@
     'myApp.en_US',
     'myApp.de_DE',
     'myApp.overview',
+    'myApp.login',
     'myApp.doorDirective',
     'myApp.twoStageButton',
     'myApp.log'
