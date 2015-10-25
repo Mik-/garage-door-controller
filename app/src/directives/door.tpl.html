@@ -1,8 +1,9 @@
 <div class="door">
   <span class="door__name">{{ doorId }}. {{ 'DOOR_NAME' | translate }}:
     {{ doorName }}</span>
-  <span ng-show="state">{{ 'STATE' | translate }}:
-    {{ state }}</span>
+  <div class="door__state">
+    <img ng-src="/static/img/{{ state }}.svg" alt="{{ state }}" width="200" height="200" />
+  </div>
   <span ng-show="intent">{{ 'INTENT' | translate }}:
     {{ intent }}</span>
   <div class="open-intent" ng-show="state !== 'OpenState'">

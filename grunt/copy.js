@@ -10,6 +10,12 @@ module.exports = {
       {
         src: '<%= bower_dir %>/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js',
         dest: '<%= release_dir %>/js/modernizr.js'
+      },
+      {
+        expand: true,
+        cwd: '<%= img_dir %>',
+        src: '**/*',
+        dest: '<%= release_dir %>/img/'
       }
     ]
   }

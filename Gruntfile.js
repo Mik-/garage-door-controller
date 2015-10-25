@@ -6,6 +6,7 @@ module.exports = function(grunt) {
       release_dir: 'static',
       temp_dir: '.temp',
       bower_dir: 'app/bower_components',
+      img_dir: 'images'
     }
   });
 };
