@@ -1,1 +1,4 @@
 #!/bin/sh
+
+cd /home/pi/garage
+/usr/bin/sudo /usr/bin/nohup /usr/bin/python controller.py &
