@@ -17,6 +17,10 @@ class PerfectDoorDriver(Driver):
         self.door_signal_toggled = False
         self.upper_limit_switch = False
         self.lower_limit_switch = True
+        # This "instance" will be used to emit signals by blinker.send
+        # and is overwritten a.e. in stuck_door_driver to reflect the
+        # current instance
+        self.instance = self
 
     def cleanup(self):
         # nothing to cleanup here
@@ -64,17 +68,17 @@ class PerfectDoorDriver(Driver):
 
         if self.lower_limit_switch:
             self.lower_limit_switch = False
-            signal(SIGNAL_LOWER_SWITCH_CHANGED).send(self)
+            signal(SIGNAL_LOWER_SWITCH_CHANGED).send(self.instance)
         elif self.upper_limit_switch:
             self.upper_limit_switch = False
-            signal(SIGNAL_UPPER_SWITCH_CHANGED).send(self)
+            signal(SIGNAL_UPPER_SWITCH_CHANGED).send(self.instance)
 
     def _transit_timer_timeout(self):
         self.transit_timer = False
 
         if self.last_direction_up:
             self.upper_limit_switch = True
-            signal(SIGNAL_UPPER_SWITCH_CHANGED).send(self)
+            signal(SIGNAL_UPPER_SWITCH_CHANGED).send(self.instance)
         else:
             self.lower_limit_switch = True
-            signal(SIGNAL_LOWER_SWITCH_CHANGED).send(self)
+            signal(SIGNAL_LOWER_SWITCH_CHANGED).send(self.instance)

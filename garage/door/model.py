@@ -22,8 +22,8 @@ class Door(object):
         self.transit_time = transit_time     # time, the door need for opening or closing
         self.trigger_time = trigger_time    # time, the relais will triggered to move door
         self.accelerate_time = accelerate_time    # time, the door need to move from switch, after the engine is triggerd
-        signal(SIGNAL_LOWER_SWITCH_CHANGED).connect(self._switch_changed)
-        signal(SIGNAL_UPPER_SWITCH_CHANGED).connect(self._switch_changed)
+        signal(SIGNAL_LOWER_SWITCH_CHANGED).connect(self._switch_changed, sender=self.driver)
+        signal(SIGNAL_UPPER_SWITCH_CHANGED).connect(self._switch_changed, sender=self.driver)
 
         self.intent = False
         self.set_intent("Idle")

@@ -11,6 +11,7 @@ class StuckDoorDriver(PerfectDoorDriver):
     def __init__(self, transit_time, accelerate_time):
         super(StuckDoorDriver, self).__init__(transit_time, accelerate_time)
         self.stuck_count = 0
+        self.instance = self
 
     def start_door_signal(self):
         self.stuck_count += 1
@@ -22,10 +23,10 @@ class StuckDoorDriver(PerfectDoorDriver):
         if self.stuck_count >= 2:
             if self.lower_limit_switch:
                 self.lower_limit_switch = False
-                signal(SIGNAL_LOWER_SWITCH_CHANGED).send(self)
+                signal(SIGNAL_LOWER_SWITCH_CHANGED).send(self.instance)
             elif self.upper_limit_switch:
                 self.upper_limit_switch = False
-                signal(SIGNAL_UPPER_SWITCH_CHANGED).send(self)
+                signal(SIGNAL_UPPER_SWITCH_CHANGED).send(self.instance)
         elif self.transit_timer:
             self.transit_timer.cancel()
             self.transit_timer = False
