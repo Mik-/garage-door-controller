@@ -15,7 +15,7 @@ currently is.
 The door is open and I press the open button; the controller should do nothing.
 
 The door is moving down and I press the open button; the controller should trigger
-the engine to stop it, wait and trigger again to move to door up.
+the engine to stop it, wait a moment and trigger again to move to door up.
 
 ## Hardware
 
