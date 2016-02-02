@@ -41,7 +41,18 @@ session = web.session.Session(app, sessionStore, initializer={'login': 0})
 
 
 class ListDoors:
+    def OPTIONS(self):
+        web.header('Access-Control-Allow-Origin',      '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
+        web.header('Access-Control-Allow-Headers', 'X-Authorization, Content-Type')
+        web.header('Access-Control-Allow-Methods', 'OPTIONS, GET')
+        web.header('Access-Control-Max-Age', '1728000')
+        return
+
     def GET(self):
+        web.header('Access-Control-Allow-Origin',      '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
+
         if session.login == 1:
             response = '{"doors": ['
 
@@ -54,14 +65,19 @@ class ListDoors:
 
             response += ']}'
 
-            web.header('Access-Control-Allow-Origin',      '*')
-
             return response
         else:
-            web.header('Access-Control-Allow-Origin',      '*')
             return '{"error": "Not logged in!"}';
 
 class DoorState:
+    def OPTIONS(self):
+        web.header('Access-Control-Allow-Origin',      '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
+        web.header('Access-Control-Allow-Headers', 'X-Authorization, Content-Type')
+        web.header('Access-Control-Allow-Methods', 'POST, OPTIONS, GET')
+        web.header('Access-Control-Max-Age', '1728000')
+        return
+
     def GET(self, door_id):
         if session.login == 1:
             id = int(door_id)
@@ -72,16 +88,18 @@ class DoorState:
             response = '{"error": "not logged in"}'
 
         web.header('Access-Control-Allow-Origin',      '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
 
         return response
 
     def POST(self, door_id):
+        web.header('Access-Control-Allow-Origin',      '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
+
         if session.login == 1:
             id = int(door_id)
 
             post_data = json.loads(web.data())
-
-            web.header('Access-Control-Allow-Origin',      '*')
 
             if 'trigger' in post_data and post_data['trigger'] == True:
                 door_list[id - 1].start_door_signal()
@@ -97,9 +115,18 @@ class DoorState:
             return '{"error": "not logged in"}'
 
 class ShowLog:
+    def OPTIONS(self):
+        web.header('Access-Control-Allow-Origin',      '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
+        web.header('Access-Control-Allow-Headers', 'X-Authorization, Content-Type')
+        web.header('Access-Control-Allow-Methods', 'OPTIONS, GET')
+        web.header('Access-Control-Max-Age', '1728000')
+        return
+
     def GET(self):
 
         web.header('Access-Control-Allow-Origin',      '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
 
         if session.login == 1:
             try:
@@ -111,21 +138,27 @@ class ShowLog:
             return 'Not logged in!'
 
 class SessionManager:
-    def GET(self):
-
+    def OPTIONS(self):
         web.header('Access-Control-Allow-Origin',      '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
+        web.header('Access-Control-Allow-Headers', 'X-Authorization, Content-Type')
+        web.header('Access-Control-Allow-Methods', 'POST, OPTIONS, GET')
+        web.header('Access-Control-Max-Age', '1728000')
+        return
 
+    def GET(self):
         if session.login == 0:
             response = '{"loggedIn": false }'
         else:
             response = '{"loggedIn": true }'
+
+        web.header('Access-Control-Allow-Origin',      '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
         return response
 
     def POST(self):
         username = '-'
         password = '-'
-
-        web.header('Access-Control-Allow-Origin',      '*')
 
         post_data = json.loads(web.data())
 
@@ -141,6 +174,10 @@ class SessionManager:
                 session.login = 1
             else:
                 session.login = 0
+
+        web.header('Access-Control-Allow-Origin',      '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
+        return
 
 class Index:
     def GET(self):
