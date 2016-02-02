@@ -53,8 +53,12 @@ class ListDoors:
                 i += 1
 
             response += ']}'
+
+            web.header('Access-Control-Allow-Origin',      '*')
+
             return response
         else:
+            web.header('Access-Control-Allow-Origin',      '*')
             return '{"error": "Not logged in!"}';
 
 class DoorState:
@@ -67,6 +71,8 @@ class DoorState:
         else:
             response = '{"error": "not logged in"}'
 
+        web.header('Access-Control-Allow-Origin',      '*')
+
         return response
 
     def POST(self, door_id):
@@ -74,6 +80,8 @@ class DoorState:
             id = int(door_id)
 
             post_data = json.loads(web.data())
+
+            web.header('Access-Control-Allow-Origin',      '*')
 
             if 'trigger' in post_data and post_data['trigger'] == True:
                 door_list[id - 1].start_door_signal()
@@ -90,6 +98,9 @@ class DoorState:
 
 class ShowLog:
     def GET(self):
+
+        web.header('Access-Control-Allow-Origin',      '*')
+
         if session.login == 1:
             try:
                 f = open('garage.log', 'r');
@@ -101,6 +112,9 @@ class ShowLog:
 
 class SessionManager:
     def GET(self):
+
+        web.header('Access-Control-Allow-Origin',      '*')
+
         if session.login == 0:
             response = '{"loggedIn": false }'
         else:
@@ -110,6 +124,8 @@ class SessionManager:
     def POST(self):
         username = '-'
         password = '-'
+
+        web.header('Access-Control-Allow-Origin',      '*')
 
         post_data = json.loads(web.data())
 
