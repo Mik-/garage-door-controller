@@ -111,6 +111,20 @@ def getDoorOptions(door_id):
 
     return resp
 
+@app.route('/login', methods=['GET'])
+@requires_auth
+def getLogin():
+    resp = Response('{"login": "ok"}')
+    resp.headers['Content-Type'] = 'application/json'
+
+    return resp
+
+@app.route('/login', methods=['OPTIONS'])
+def getLoginOptions():
+    resp = Response()
+
+    return resp
+
 def init():
     # Process config file
     with open(config_filename) as json_data_file:
