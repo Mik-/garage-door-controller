@@ -3,8 +3,6 @@
 from garage.door.model import Door
 from functools import wraps
 from flask import Flask, request, Response
-#from flask_restful import Resource, Api
-from flask.ext.cors import CORS, cross_origin
 import logging
 from optparse import OptionParser
 import sys
@@ -28,8 +26,6 @@ door_list = []
 allowed_users = []
 
 app = Flask(__name__)
-#CORS(app, allow_headers='content-type, authorization')
-#api = Api(app)
 
 # Authentication
 def check_auth(username, password):
@@ -166,7 +162,7 @@ if __name__ == "__main__":
 
     init()
 
-    app.run()
+    app.run(host="0.0.0.0", port=8080)
 
     for door in door_list:
         door.cleanup()

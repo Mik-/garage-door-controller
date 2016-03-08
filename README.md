@@ -92,7 +92,7 @@ the limit switches.
 
     sudo apt-get install python-pip
     sudo pip install blinker
-    sudo pip install web.py
+    sudo pip install flask
     git clone https://github.com/Mik-/garage-door-controller.git garage
     cd garage
 
