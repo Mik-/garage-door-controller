@@ -1,13 +1,13 @@
 import logging
 
-logger = logging.getLogger('garage.door.' + __name__)
+LOGGER = logging.getLogger('garage.door.' + __name__)
 
 class ErrorState:
     def __init__(self, door_model):
         self.door_model = door_model
 
     def enter(self):
-        logger.error("State 'error' entered")
+        LOGGER.debug("State 'error' entered")
 
     def exit(self):
-        logger.debug("State 'error' exited")
+        LOGGER.debug("State 'error' exited")

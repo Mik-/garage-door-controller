@@ -1,49 +1,60 @@
-from nose.tools import *
+"""
+Test a complete walk of a perfect door.
+"""
+
+import unittest
+import time
 from garage.door.model import Door
 from perfect_door_driver import PerfectDoorDriver
-from blinker import signal
-from garage.door.signals import *
-import time
 
-def test_perfect_door():
-    # Door is closed
-    driver = PerfectDoorDriver(0.4, 0.15)
-    door_model = Door("Test door", driver, 0.5, 0.1, 0.2)
+class TestPerfectDoor(unittest.TestCase):
+    """
+    Test a walk of a perfect door.
+    """
 
-    # The door is closed and idle
-    assert door_model.state.__class__.__name__ == 'ClosedState'
-    assert door_model.intent.__class__.__name__ == 'IdleIntent'
-    # Set "open" intent
-    door_model.set_intent('Open');
-    assert door_model.intent.__class__.__name__ == 'OpenIntent'
-    assert driver.door_signal == True
-    time.sleep(0.2)
-    # After 0.15 seconds, the door should be in transit to upper position
-    assert driver.door_signal == False
-    assert door_model.state.__class__.__name__ == 'OpeningState'
-    assert door_model.intent.__class__.__name__ == 'OpenIntent'
-    assert driver.lower_limit_switch == False
-    assert driver.upper_limit_switch == False
-    time.sleep(0.25)
-    # After 0.4 seconds, the door should be in upper position
-    assert door_model.state.__class__.__name__ == 'OpenState'
-    assert door_model.intent.__class__.__name__ == 'IdleIntent'
-    assert driver.upper_limit_switch == True
+    def test_perfect_door(self):
+        """
+        Test a walk of a perfect door.
+        """
 
-    # The door is open and idle
-    # Set "close" intent
-    door_model.set_intent('Close');
-    assert door_model.intent.__class__.__name__ == 'CloseIntent'
-    assert driver.door_signal == True
-    time.sleep(0.2)
-    # After 0.15 seconds, the door should be in transit to lower position
-    assert driver.door_signal == False
-    assert door_model.state.__class__.__name__ == 'ClosingState'
-    assert door_model.intent.__class__.__name__ == 'CloseIntent'
-    assert driver.lower_limit_switch == False
-    assert driver.upper_limit_switch == False
-    time.sleep(0.25)
-    # After 0.4 seconds, the door should be in lower position
-    assert door_model.state.__class__.__name__ == 'ClosedState'
-    assert door_model.intent.__class__.__name__ == 'IdleIntent'
-    assert driver.lower_limit_switch == True
+        # Door is closed
+        driver = PerfectDoorDriver(0.4, 0.15)
+        door_model = Door("Test door", driver, 0.5, 0.1, 0.2)
+
+        # The door is closed and idle
+        self.assertEqual(door_model.state.__class__.__name__, 'ClosedState')
+        self.assertEqual(door_model.intent.__class__.__name__, 'IdleIntent')
+        # Set "open" intent
+        door_model.set_intent('Open')
+        self.assertEqual(door_model.intent.__class__.__name__, 'OpenIntent')
+        self.assertTrue(driver.door_signal)
+        time.sleep(0.2)
+        # After 0.15 seconds, the door should be in transit to upper position
+        self.assertFalse(driver.door_signal)
+        self.assertEqual(door_model.state.__class__.__name__, 'OpeningState')
+        self.assertEqual(door_model.intent.__class__.__name__, 'OpenIntent')
+        self.assertFalse(driver.lower_limit_switch)
+        self.assertFalse(driver.upper_limit_switch)
+        time.sleep(0.25)
+        # After 0.4 seconds, the door should be in upper position
+        self.assertEqual(door_model.state.__class__.__name__, 'OpenState')
+        self.assertEqual(door_model.intent.__class__.__name__, 'IdleIntent')
+        self.assertTrue(driver.upper_limit_switch)
+
+        # The door is open and idle
+        # Set "close" intent
+        door_model.set_intent('Close')
+        self.assertEqual(door_model.intent.__class__.__name__, 'CloseIntent')
+        self.assertTrue(driver.door_signal)
+        time.sleep(0.2)
+        # After 0.15 seconds, the door should be in transit to lower position
+        self.assertFalse(driver.door_signal)
+        self.assertEqual(door_model.state.__class__.__name__, 'ClosingState')
+        self.assertEqual(door_model.intent.__class__.__name__, 'CloseIntent')
+        self.assertFalse(driver.lower_limit_switch)
+        self.assertFalse(driver.upper_limit_switch)
+        time.sleep(0.25)
+        # After 0.4 seconds, the door should be in lower position
+        self.assertEqual(door_model.state.__class__.__name__, 'ClosedState')
+        self.assertEqual(door_model.intent.__class__.__name__, 'IdleIntent')
+        self.assertTrue(driver.lower_limit_switch)
