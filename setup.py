@@ -10,7 +10,7 @@ config = {
     'download_url': 'www.neuendorf-online.de',
     'author_email': 'michael@neuendorf-online.de',
     'version': '0.1',
-    'install_requires': ['nose', 'RPi.GPIO', 'blinker'],
+    'install_requires': ['RPi.GPIO', 'blinker', 'flask'],
     'packages': ['garage'],
     'py_modules': ['controller'],
     'data_files': [('/etc/init.d', ['scripts/garage-door-opener'])],

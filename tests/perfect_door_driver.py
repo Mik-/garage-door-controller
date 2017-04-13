@@ -1,10 +1,14 @@
-from garage.door.driver import Driver
+"""
+Simulates a perfect door.
+"""
+
+import logging
 from threading import Timer
 from blinker import signal
-from garage.door.signals import *
-import logging
+from garage.door.driver import Driver
+from garage.door.signals import SIGNAL_LOWER_SWITCH_CHANGED, SIGNAL_UPPER_SWITCH_CHANGED
 
-logger = logging.getLogger("tests." + __name__)
+LOGGER = logging.getLogger("tests." + __name__)
 
 class PerfectDoorDriver(Driver):
     """This driver emulates a perfect door."""
@@ -17,6 +21,7 @@ class PerfectDoorDriver(Driver):
         self.door_signal_toggled = False
         self.upper_limit_switch = False
         self.lower_limit_switch = True
+        self.last_direction_up = False
         # This "instance" will be used to emit signals by blinker.send
         # and is overwritten a.e. in stuck_door_driver to reflect the
         # current instance
@@ -24,15 +29,15 @@ class PerfectDoorDriver(Driver):
 
     def cleanup(self):
         # nothing to cleanup here
-        logger.debug("Cleanup.")
+        LOGGER.debug("Cleanup.")
         if self.transit_timer:
             self.transit_timer.cancel()
         if self.accelerate_timer:
             self.accelerate_timer.cancel()
 
     def start_door_signal(self):
-        logger.debug("door signal started")
-        if self.door_signal == False:
+        LOGGER.debug("door signal started")
+        if not self.door_signal:
             self.door_signal_toggled = True
         self.door_signal = True
 
@@ -52,8 +57,8 @@ class PerfectDoorDriver(Driver):
         self.transit_timer.start()
 
     def stop_door_signal(self):
-        logger.debug("door signal stopped")
-        if self.door_signal == True:
+        LOGGER.debug("door signal stopped")
+        if self.door_signal:
             self.door_signal_toggled = True
         self.door_signal = False
 

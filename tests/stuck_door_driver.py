@@ -1,10 +1,13 @@
-from perfect_door_driver import PerfectDoorDriver
-from threading import Timer
-from blinker import signal
-from garage.door.signals import *
-import logging
+"""
+Simulates a door, which stucks on first trigger.
+"""
 
-logger = logging.getLogger("tests." + __name__)
+import logging
+from blinker import signal
+from perfect_door_driver import PerfectDoorDriver
+from garage.door.signals import SIGNAL_LOWER_SWITCH_CHANGED, SIGNAL_UPPER_SWITCH_CHANGED
+
+LOGGER = logging.getLogger("tests." + __name__)
 
 class StuckDoorDriver(PerfectDoorDriver):
     """This driver emulates a door wich stucks on first trigger."""
@@ -12,6 +15,10 @@ class StuckDoorDriver(PerfectDoorDriver):
         super(StuckDoorDriver, self).__init__(transit_time, accelerate_time)
         self.stuck_count = 0
         self.instance = self
+        self.lower_limit_switch = False
+        self.upper_limit_switch = False
+        self.transit_timer = False
+        self.accelerate_timer = False
 
     def start_door_signal(self):
         self.stuck_count += 1

@@ -1,9 +1,15 @@
-from garage.door.driver import Driver
+"""
+This is a mock for the driver interface.
+"""
 import logging
+from garage.door.driver import Driver
 
-logger = logging.getLogger("tests." + __name__)
+LOGGER = logging.getLogger("tests." + __name__)
 
 class MockDriver(Driver):
+    """
+    Mocking class for driver interface.
+    """
     def __init__(self):
         self.door_signal = False
         self.door_signal_toggled = False
@@ -12,17 +18,17 @@ class MockDriver(Driver):
 
     def cleanup(self):
         # nothing to cleanup here
-        logger.debug("MockDriver cleanup.")
+        LOGGER.debug("MockDriver cleanup.")
 
     def start_door_signal(self):
-        logger.debug("door signal started")
-        if self.door_signal == False:
+        LOGGER.debug("door signal started")
+        if not self.door_signal:
             self.door_signal_toggled = True
         self.door_signal = True
 
     def stop_door_signal(self):
-        logger.debug("door signal stopped")
-        if self.door_signal == True:
+        LOGGER.debug("door signal stopped")
+        if self.door_signal:
             self.door_signal_toggled = True
         self.door_signal = False
 
