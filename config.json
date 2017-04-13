@@ -3,7 +3,8 @@
     {
       "name": "Door 1",
       "driver": {
-        "class": "RPiDriver",
+        "class": "PiGpioDriver",
+        "host": "192.168.6.90",
         "gpioRelay": 18,
         "gpioUpperLimitSwitch": 17,
         "gpioLowerLimitSwitch": 27

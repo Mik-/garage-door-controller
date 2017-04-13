@@ -200,6 +200,14 @@ def init():
                 door_config["driver"]["gpioRelay"],
                 door_config["driver"]["gpioUpperLimitSwitch"],
                 door_config["driver"]["gpioLowerLimitSwitch"])
+        elif door_config["driver"]["class"] == "PiGpioDriver":
+            # Instantiate PiGpio driver
+            rpidriver_module = importlib.import_module("garage.door.pigpio_driver")
+            driver = getattr(rpidriver_module, "PiGpioDriver")(
+                door_config["driver"]["host"],
+                door_config["driver"]["gpioRelay"],
+                door_config["driver"]["gpioUpperLimitSwitch"],
+                door_config["driver"]["gpioLowerLimitSwitch"])
 
         new_door = Door(door_config["name"], driver, door_config["transitTime"],
             door_config["triggerTime"], door_config["accelerateTime"])
