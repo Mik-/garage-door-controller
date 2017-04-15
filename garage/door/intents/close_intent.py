@@ -1,19 +1,28 @@
-from ..signals import *
-from blinker import signal
-from threading import Timer
-import logging
+"""This module provides the CloseIntent class."""
 
-logger = logging.getLogger('garage.door.' + __name__)
+import logging
+from threading import Timer
+from blinker import signal
+from ..signals import SIGNAL_DOOR_STATE_CHANGED
+
+LOGGER = logging.getLogger('garage.door.' + __name__)
 
 class CloseIntent:
+    """This class implements the close intent.
+
+    This intent controls the model in that way, that the door is
+    eventually closed."""
+
     def __init__(self, door_model):
         self.door_model = door_model
         self.timer = False
+        self.allowed_state_changes = 0
+        self.last_state_name = ""
 
     def start(self):
-        """This intent controls the model in that way, that the door is
-        eventually closed."""
-        logger.debug("Intent 'Close' started.")
+        """Initialize the intent and call the actions to close the door."""
+
+        LOGGER.debug("Intent 'Close' started.")
         self.allowed_state_changes = 5
 
         self.last_state_name = self.door_model.state.__class__.__name__
@@ -24,7 +33,7 @@ class CloseIntent:
 
     def cleanup(self):
         """Do cleanup tasks. Disconnect from signals an so on."""
-        logger.debug("Cleanup intent " + self.__class__.__name__)
+        LOGGER.debug("Cleanup intent " + self.__class__.__name__)
 
         if self.timer:
             self.timer.cancel()
@@ -33,15 +42,17 @@ class CloseIntent:
         signal(SIGNAL_DOOR_STATE_CHANGED).disconnect(self._state_changed, sender=self.door_model)
 
     def _state_changed(self, sender):
+        """Handle the "state changed" event."""
+        
         self.allowed_state_changes -= 1
         if self.allowed_state_changes <= 0:
             # Too many state changes, stop this intent
-            logger.warning("Intent 'Close' aborted due to many state changes!")
+            LOGGER.warning("Intent 'Close' aborted due to many state changes!")
             self.door_model.set_intent("Idle")
         elif sender == self.door_model:
             self._send_command_to_door()
         else:
-            logger.debug("This intent don't handle door %s.", sender.__class__.__name__)
+            LOGGER.debug("This intent don't handle door %s.", sender.__class__.__name__)
 
 
     def _send_command_to_door(self):
@@ -50,7 +61,7 @@ class CloseIntent:
 
         if self.door_model.state.__class__.__name__ == "ClosedState":
             # The intent is fulfilled
-            logger.debug("Intent 'Close' fulfilled.")
+            LOGGER.debug("Intent 'Close' fulfilled.")
             self.door_model.set_intent("Idle")
 
         elif self.door_model.state.__class__.__name__ == "OpenState":
@@ -59,33 +70,33 @@ class CloseIntent:
             # After a wait time, this method is called again and the last state
             # is the same
             if self.last_state_name == 'OpenState':
-                # The door is open. Trigger the door to close it
-                logger.debug("Door is open. Trigger closing.")
+                # The door is still open. Trigger the door to close it
+                LOGGER.debug("Door is open. Trigger closing.")
                 self.door_model.start_door_signal()
 
             self._set_timer(self.door_model.accelerate_time)
 
         elif self.door_model.state.__class__.__name__ == "ClosingState":
             # The door is going to be closed. Just wait
-            logger.debug("Waiting.")
+            LOGGER.debug("Waiting.")
             self._set_timer(self.door_model.transit_time)
 
         elif self.door_model.state.__class__.__name__ == "OpeningState":
             # The door is going to be open. Stop it, wait and close it
-            logger.debug("Stop door to close it with the next command.")
+            LOGGER.debug("Stop door to close it with the next command.")
             self.door_model.start_door_signal()
-            self._set_timer(self.door_model.transit_time)
+            self._set_timer(self.door_model.accelerate_time)
 
         elif self.door_model.state.__class__.__name__ == "IntermediateState":
-            logger.debug("Start door and wait for the next state.")
+            LOGGER.debug("Start door and wait for the next state.")
             self.door_model.start_door_signal()
             self._set_timer(self.door_model.transit_time)
 
         elif self.door_model.state.__class__.__name__ == "ErrorState":
-            logger.debug("OpenIntent: Door in error state. Abort intent.")
+            LOGGER.debug("OpenIntent: Door in error state. Abort intent.")
             self.door_model.set_intent("Idle")
         else:
-            logger.error("Unhandled door state %s", self.door_model.state.__class__.__name__)
+            LOGGER.error("Unhandled door state %s", self.door_model.state.__class__.__name__)
             self.door_model.set_intent("Idle")
 
         # remember the state to do something depending on it, when this method
@@ -93,11 +104,11 @@ class CloseIntent:
         self.last_state_name = self.door_model.state.__class__.__name__
 
     def _set_timer(self, time):
-            if self.timer:
-                self.timer.cancel()
-            self.timer = Timer(time, self._timeout)
-            self.timer.start()
+        if self.timer:
+            self.timer.cancel()
+        self.timer = Timer(time, self._timeout)
+        self.timer.start()
 
     def _timeout(self):
-        logger.debug("Timeout occured.")
+        LOGGER.debug("Timeout occured.")
         self._state_changed(self.door_model)
