@@ -6,8 +6,9 @@ from blinker import signal
 from ..signals import SIGNAL_DOOR_STATE_CHANGED
 
 LOGGER = logging.getLogger('garage.door.' + __name__)
+MAX_STATE_CHANGES = 5
 
-class OpenIntent:
+class OpenIntent(object):
     """This intent class controls the model in that way, that the door is
         eventually open."""
 
@@ -22,7 +23,7 @@ class OpenIntent:
 
         LOGGER.debug("Intent 'Open' started.")
 
-        self.allowed_state_changes = 5
+        self.allowed_state_changes = MAX_STATE_CHANGES
         self.last_state_name = self.door_model.state.__class__.__name__
 
         signal(SIGNAL_DOOR_STATE_CHANGED).connect(self._state_changed, sender=self.door_model)

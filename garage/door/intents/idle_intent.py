@@ -1,6 +1,6 @@
 """This module provides the IdleIntent class."""
 
-class IdleIntent:
+class IdleIntent(object):
     """This class represents the idle intent. No door controlling is done."""
 
     def __init__(self, door_model):

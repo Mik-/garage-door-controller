@@ -6,8 +6,9 @@ from blinker import signal
 from ..signals import SIGNAL_DOOR_STATE_CHANGED
 
 LOGGER = logging.getLogger('garage.door.' + __name__)
+MAX_STATE_CHANGES = 8
 
-class CloseIntent:
+class CloseIntent(object):
     """This class implements the close intent.
 
     This intent controls the model in that way, that the door is
@@ -23,7 +24,7 @@ class CloseIntent:
         """Initialize the intent and call the actions to close the door."""
 
         LOGGER.debug("Intent 'Close' started.")
-        self.allowed_state_changes = 5
+        self.allowed_state_changes = MAX_STATE_CHANGES
 
         self.last_state_name = self.door_model.state.__class__.__name__
 
@@ -43,7 +44,7 @@ class CloseIntent:
 
     def _state_changed(self, sender):
         """Handle the "state changed" event."""
-        
+
         self.allowed_state_changes -= 1
         if self.allowed_state_changes <= 0:
             # Too many state changes, stop this intent

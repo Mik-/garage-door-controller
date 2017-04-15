@@ -124,7 +124,7 @@ class TestDoorModelSwitching(unittest.TestCase):
 
     def test_opening_timeout(self):
         """
-        The door is opening. After transit time and not reaching upper limit, 
+        The door is opening. After transit time and not reaching upper limit,
         it should change to intermediate state.
         """
 
