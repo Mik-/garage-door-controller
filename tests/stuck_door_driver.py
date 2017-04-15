@@ -15,10 +15,6 @@ class StuckDoorDriver(PerfectDoorDriver):
         super(StuckDoorDriver, self).__init__(transit_time, accelerate_time)
         self.stuck_count = 0
         self.instance = self
-        self.lower_limit_switch = False
-        self.upper_limit_switch = False
-        self.transit_timer = False
-        self.accelerate_timer = False
 
     def start_door_signal(self):
         self.stuck_count += 1
