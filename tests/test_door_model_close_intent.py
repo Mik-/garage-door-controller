@@ -88,3 +88,31 @@ class TestDoorModelCloseIntent(unittest.TestCase):
 
         self.assertEqual(door_model.state.__class__.__name__, "ClosedState")
         self.assertEqual(door_model.intent.__class__.__name__, "IdleIntent")
+
+    def test_state_opening(self):
+        """Test a walk from opening to closed."""
+
+        # Door is opening
+        mock_driver = MockDriver()
+        door_model = Door("Test door", mock_driver, 1, 0.1, 0.3)
+        door_model.set_new_state("Opening")
+
+        # start intent
+        door_model.set_intent("Close")
+
+        # Door should be triggered to stop
+        self.assertEqual(mock_driver.trigger_count, 0, "Nothing should be triggerd")
+        time.sleep(0.2)
+        self.assertEqual(mock_driver.trigger_count, 1, "First trigger to stop the door")
+
+        # Door should be triggered again to start moving up
+        time.sleep(0.3)
+        self.assertEqual(mock_driver.trigger_count, 2, "Second trigger to start door moving up")
+
+        # After moving, the upper switch closes
+        time.sleep(0.5)
+        mock_driver.lower_limit_switch = True
+        signal(SIGNAL_LOWER_SWITCH_CHANGED).send(mock_driver)
+        self.assertEqual(door_model.state.__class__.__name__, "ClosedState")
+        self.assertEqual(door_model.intent.__class__.__name__, "IdleIntent")
+        self.assertEqual(mock_driver.trigger_count, 2, "No additional triggers allowed")
