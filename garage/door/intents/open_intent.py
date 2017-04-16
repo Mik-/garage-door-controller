@@ -45,7 +45,7 @@ class OpenIntent(object):
         self.allowed_state_changes -= 1
         if self.allowed_state_changes <= 0:
             # Too many state changes, stop this intent
-            LOGGER.warning("Intent 'Open' aborted due to many state changes!")
+            LOGGER.debug("Intent 'Open' aborted due to many state changes!")
             self.door_model.set_intent("Idle")
         elif sender == self.door_model:
             self._send_command_to_door()
@@ -94,8 +94,9 @@ class OpenIntent(object):
             LOGGER.debug("Door in error state. Abort intent.")
             self.door_model.set_intent("Idle")
         else:
-            LOGGER.error("Unhandled door state %s", self.door_model.state.__class__.__name__)
+            LOGGER.debug("Unhandled door state %s", self.door_model.state.__class__.__name__)
             self.door_model.set_intent("Idle")
+            raise Exception("Unhandled door state %s", self.door_model.state.__class__.__name__)
 
         # remember the state to do something depending on it, when this method
         # is called the next time
