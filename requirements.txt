@@ -1,3 +1,4 @@
 blinker
 flask
 web.py
+pigpio
