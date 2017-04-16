@@ -15,6 +15,7 @@ class MockDriver(Driver):
         self.door_signal_toggled = False
         self.upper_limit_switch = False
         self.lower_limit_switch = False
+        self.trigger_count = False
 
     def cleanup(self):
         # nothing to cleanup here
@@ -30,6 +31,7 @@ class MockDriver(Driver):
         LOGGER.debug("door signal stopped")
         if self.door_signal:
             self.door_signal_toggled = True
+            self.trigger_count += 1
         self.door_signal = False
 
     def get_upper_limit_switch_state(self):
