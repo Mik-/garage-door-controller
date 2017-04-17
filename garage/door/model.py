@@ -8,6 +8,7 @@ from garage.door.signals import SIGNAL_LOWER_SWITCH_CHANGED, SIGNAL_UPPER_SWITCH
 from garage.door.signals import SIGNAL_DOOR_STATE_CHANGED
 from garage.door.positions import DOOR_POSITION_CLOSED, DOOR_POSITION_ERROR
 from garage.door.positions import DOOR_POSITION_INTERMEDIATE, DOOR_POSITION_OPEN
+from garage.door.states.state import StateFactory
 
 LOGGER = logging.getLogger('garage.door.' + __name__)
 
@@ -81,10 +82,9 @@ class Door(object):
         # this method, there is no state assigned
         if self.state is not None:
             self.state.exit()
-        # Instantiate a new state object by its name
-        state_module = importlib.import_module("garage.door.states." +
-                                               new_state_name.lower() + "_state")
-        self.state = getattr(state_module, new_state_name + "State")(self)
+        
+        # Get a new state instance
+        self.state = StateFactory.create_state(new_state_name, self)
 
         self.state.enter()
 

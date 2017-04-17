@@ -29,8 +29,8 @@ class TestState(unittest.TestCase):
 
         state = ConcreteState()
 
-        state.add_action('test1', lambda: "test 1")
-        state.add_action('test2', lambda: "test 2")
+        state.register_action('test1', lambda: "test 1")
+        state.register_action('test2', lambda: "test 2")
 
         self.assertEqual(state.get_action('test1')(), "test 1")
         self.assertEqual(state.get_action('test2')(), "test 2")
