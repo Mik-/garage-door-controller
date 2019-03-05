@@ -4,6 +4,9 @@ import logging
 from threading import Timer
 from ..positions import DOOR_POSITION_CLOSED, DOOR_POSITION_OPEN
 from .state import State
+from garage.door.commands.delay import DelayCommand
+from garage.door.commands.trigger_door import TriggerDoorCommand
+from garage.door.intents import OPEN_INTENT, CLOSE_INTENT
 
 LOGGER = logging.getLogger('garage.door.' + __name__)
 
@@ -59,6 +62,21 @@ class ClosingStateFactory(object):
         # Create a new instance
         instance = ClosingState(door_model)
 
-        # There are no actions to register in this state
+        # Register commands for the open intent
+        def queue_open_intent_commands(door):
+            """This method add commands for the open intent to the door command queue."""
+            door.command_queue.put(TriggerDoorCommand())
+            door.command_queue.put(DelayCommand(door_model.accelerate_time))
+            door.command_queue.put(TriggerDoorCommand())
+            door.command_queue.put(DelayCommand(door_model.transit_time))
+
+        instance.register_action(OPEN_INTENT, queue_open_intent_commands)
+
+        # Register command for the close intent
+        def queue_close_intent_commands(door):
+            """This method add commands for the close intent to the door command queue."""
+            door.command_queue.put(DelayCommand(door_model.transit_time))
+
+        instance.register_action(CLOSE_INTENT, queue_close_intent_commands)
 
         return instance

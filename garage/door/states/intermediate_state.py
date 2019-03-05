@@ -3,6 +3,9 @@
 import logging
 from ..positions import DOOR_POSITION_CLOSED, DOOR_POSITION_OPEN
 from .state import State
+from garage.door.commands.delay import DelayCommand
+from garage.door.commands.trigger_door import TriggerDoorCommand
+from garage.door.intents import OPEN_INTENT, CLOSE_INTENT
 
 LOGGER = logging.getLogger('garage.door.' + __name__)
 
@@ -44,6 +47,13 @@ class IntermediateStateFactory(object):
         # Create a new instance
         instance = IntermediateState(door_model)
 
-        # There are no actions to register in this state
+        # Register commands (for both intents the same)
+        def queue_commands(door):
+            """This method add commands for the open intent to the door command queue."""
+            door.command_queue.put(TriggerDoorCommand())
+            door.command_queue.put(DelayCommand(door_model.transit_time))
+
+        instance.register_action(OPEN_INTENT, queue_commands)
+        instance.register_action(CLOSE_INTENT, queue_commands)
 
         return instance

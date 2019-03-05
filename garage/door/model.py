@@ -1,14 +1,14 @@
 """This module provides the Door class."""
 
 import logging
-import importlib
-from threading import Timer
+from Queue import Queue, Empty
 from blinker import signal
 from garage.door.signals import SIGNAL_LOWER_SWITCH_CHANGED, SIGNAL_UPPER_SWITCH_CHANGED
 from garage.door.signals import SIGNAL_DOOR_STATE_CHANGED
 from garage.door.positions import DOOR_POSITION_CLOSED, DOOR_POSITION_ERROR
 from garage.door.positions import DOOR_POSITION_INTERMEDIATE, DOOR_POSITION_OPEN
 from garage.door.states.state import StateFactory
+from garage.door.intents import IDLE_INTENT
 
 LOGGER = logging.getLogger('garage.door.' + __name__)
 
@@ -19,9 +19,12 @@ class Door(object):
     def __init__(self, name, driver, transit_time, trigger_time, accelerate_time):
         LOGGER.debug("Door '%s' instantiation start", name)
 
+        self.command_queue = Queue()
+        self.running_command = None
+
         self.name = name
         self.driver = driver
-        self.trigger_timer = None
+        self.intent = IDLE_INTENT
         self.state = None
         if self._check_for_error_condition():
             self.set_new_state("Error")
@@ -34,9 +37,6 @@ class Door(object):
         signal(SIGNAL_LOWER_SWITCH_CHANGED).connect(self._switch_changed, sender=self.driver)
         signal(SIGNAL_UPPER_SWITCH_CHANGED).connect(self._switch_changed, sender=self.driver)
 
-        self.intent = None
-        self.set_intent("Idle")
-
         LOGGER.debug("Door '%s' instantiated", name)
 
     def cleanup(self):
@@ -45,13 +45,9 @@ class Door(object):
         signal(SIGNAL_LOWER_SWITCH_CHANGED).disconnect(self._switch_changed)
         signal(SIGNAL_UPPER_SWITCH_CHANGED).disconnect(self._switch_changed)
 
-        if self.trigger_timer is not None:
-            self.trigger_timer.cancel()
-            self.trigger_timer = None
+        self.reset_command_queue()
 
-        if self.intent is not None:
-            self.intent.cleanup()
-            self.intent = None
+        self.stop_door_signal()
 
         self.driver.cleanup()
 
@@ -62,31 +58,31 @@ class Door(object):
         LOGGER.debug("Start door signal")
         self.driver.start_door_signal()
 
-        if self.trigger_timer is not None:
-            self.trigger_timer.cancel()
-        self.trigger_timer = Timer(self.trigger_time, self._trigger_timeout)
-        self.trigger_timer.start()
-
     def stop_door_signal(self):
         """Closes the relay, which triggers the physical door controller."""
         LOGGER.debug("Stop door signal")
-
         self.driver.stop_door_signal()
-        if self.trigger_timer is not None:
-            self.trigger_timer.cancel()
-            self.trigger_timer = None
 
     def set_new_state(self, new_state_name):
         """Set the new controller state."""
+
+        # Cancel the running command and clear the command queue
+        self.reset_command_queue()
+
         # If a state is assigned, call the exit method. On the first call of
         # this method, there is no state assigned
         if self.state is not None:
             self.state.exit()
-        
+
         # Get a new state instance
         self.state = StateFactory.create_state(new_state_name, self)
 
         self.state.enter()
+
+        # Call the next command, to fulfill the desired intent
+        # If no commands are queued, the commands defined by the state
+        # will be queued first.
+        self.invoke_next_command()
 
         signal(SIGNAL_DOOR_STATE_CHANGED).send(self)
 
@@ -122,22 +118,53 @@ class Door(object):
         else:
             return False
 
-    def _trigger_timeout(self):
-        """The timeout for triggering the relay occured."""
-        LOGGER.debug("Trigger timeout occured")
-        self.trigger_timer = None
-        self.stop_door_signal()
+    def set_intent(self, new_intent):
+        """Set the new intent."""
 
-    def set_intent(self, new_intent_name):
-        """Instantiate a new intent object by its name."""
-        # Cleanup last intent
-        if self.intent is not None:
-            self.intent.cleanup()
+        LOGGER.debug("Setting new intent: %d", new_intent)
 
-        # Instantiate new intent
-        LOGGER.debug("Setting new intent: " + new_intent_name)
-        intent_module = importlib.import_module("garage.door.intents." +
-                                                new_intent_name.lower() + "_intent")
-        self.intent = getattr(intent_module, new_intent_name + "Intent")(self)
+        if self.intent != new_intent:
+            # stop running commands
+            self.reset_command_queue()
 
-        self.intent.start()
+            self.intent = new_intent
+
+            self.invoke_next_command()
+
+    def invoke_next_command(self):
+        """Calls the next queue command, if any is available."""
+
+        try:
+            # If queue is empty, add commands from current state
+            if self.command_queue.empty():
+                self.queue_state_commands(self.intent)
+
+            # Execute the next command in queue
+            if not self.command_queue.empty():
+                self.running_command = self.command_queue.get_nowait()
+                self.running_command.execute(self)
+        except Empty:
+            pass
+
+    def command_done(self):
+        """This method should be called by every command, when it's action is done."""
+        self.running_command = None
+        self.invoke_next_command()
+
+    def reset_command_queue(self):
+        """This method cancels the running command and clears the command queue."""
+        # Cancel the running command
+        if self.running_command is not None:
+            self.running_command.cancel()
+            self.running_command = None
+
+        # Create a new command queue -> clear current queue
+        self.command_queue = Queue()
+
+    def queue_state_commands(self, intent):
+        """This method fills the command queue with the command, defined by the
+        current state for the given intent."""
+
+        state_action = self.state.get_action(intent)
+        if state_action is not None:
+            state_action(self)

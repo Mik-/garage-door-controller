@@ -25,33 +25,33 @@ class State(object):
         """This method is called by the door model, if this state is exited."""
         raise NotImplementedError
 
-    def register_action(self, intent_name, action):
+    def register_action(self, intent, action):
         """This method adds an action for the given intent.
 
         Args:
-            intent_name (str): The name of the intent, for which the action is registered.
+            intent (int): The ID of the intent, for which the action is registered.
             action: A method, which is called, to reach the intent.
         """
 
-        if intent_name in self.actions:
-            raise Exception("Action for intent %s already exists!", intent_name)
+        if intent in self.actions:
+            raise Exception("Action for intent %s already exists!", intent)
         else:
-            self.actions[intent_name] = action
+            self.actions[intent] = action
 
-    def get_action(self, intent_name):
+    def get_action(self, intent):
         """This method returns an action, which is necessary to reach the desired intent.
 
         Args:
-            intent_name (str): The desired intent.
+            intent (int): The desired intent ID.
 
         Returns:
             A method, which is called by the door model. This method has to do all
-            actions, which are necessary to reach teh desired intent. Then method
+            actions, which are necessary to reach the desired intent. Then method
             takes the door model as parameter.
         """
 
-        if intent_name in self.actions:
-            return self.actions[intent_name]
+        if intent in self.actions:
+            return self.actions[intent]
         else:
             return None
 

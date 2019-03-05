@@ -1,0 +1,4 @@
+# Intents
+IDLE_INTENT = 1
+OPEN_INTENT = 2
+CLOSE_INTENT = 3

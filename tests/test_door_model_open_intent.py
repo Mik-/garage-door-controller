@@ -8,6 +8,7 @@ import logging
 from blinker import signal
 from garage.door.model import Door
 from garage.door.signals import SIGNAL_LOWER_SWITCH_CHANGED, SIGNAL_UPPER_SWITCH_CHANGED
+from garage.door.intents import IDLE_INTENT, OPEN_INTENT
 from tests.mock_driver import MockDriver
 
 LOGGER = logging.getLogger(__name__)
@@ -28,7 +29,12 @@ class TestDoorModelOpenIntent(unittest.TestCase):
         door_model = Door("Test door", mock_driver, 1, 0.1, 0.2)
 
         # start intent
-        door_model.set_intent("Open")
+        door_model.set_intent(OPEN_INTENT)
+
+        self.assertFalse(mock_driver.door_signal)
+
+        # The command waits the acceleration time, before triggering
+        time.sleep(0.3)
 
         self.assertTrue(mock_driver.door_signal)
 
@@ -44,7 +50,7 @@ class TestDoorModelOpenIntent(unittest.TestCase):
         signal(SIGNAL_UPPER_SWITCH_CHANGED).send(mock_driver)
 
         self.assertEqual(door_model.state.__class__.__name__, "OpenState")
-        self.assertEqual(door_model.intent.__class__.__name__, "IdleIntent")
+        self.assertEqual(door_model.intent, IDLE_INTENT)
 
     def test_state_closed_error(self):
         """
@@ -54,10 +60,15 @@ class TestDoorModelOpenIntent(unittest.TestCase):
         # Door is closed
         mock_driver = MockDriver()
         mock_driver.lower_limit_switch = True
-        door_model = Door("Test door", mock_driver, 1, 0.1, 0.3)
+        door_model = Door("Test door", mock_driver, 1, 0.1, 0.2)
 
         # start intent
-        door_model.set_intent("Open")
+        door_model.set_intent(OPEN_INTENT)
+
+        self.assertFalse(mock_driver.door_signal)
+
+        # The command waits the acceleration time, before triggering
+        time.sleep(0.3)
 
         self.assertTrue(mock_driver.door_signal)
 
@@ -69,7 +80,7 @@ class TestDoorModelOpenIntent(unittest.TestCase):
         mock_driver.door_signal_toggled = False
 
         LOGGER.debug("The intent have to restart the door after timeout")
-        time.sleep(0.2)
+        time.sleep(0.3)
         self.assertTrue(mock_driver.door_signal_toggled)
 
         LOGGER.debug("The intent have restart the door after timeout")
@@ -86,7 +97,7 @@ class TestDoorModelOpenIntent(unittest.TestCase):
         signal(SIGNAL_UPPER_SWITCH_CHANGED).send(mock_driver)
 
         self.assertEqual(door_model.state.__class__.__name__, "OpenState")
-        self.assertEqual(door_model.intent.__class__.__name__, "IdleIntent")
+        self.assertEqual(door_model.intent, IDLE_INTENT)
 
     def test_state_closing(self):
         """Test a walk from closing to open."""
@@ -97,7 +108,7 @@ class TestDoorModelOpenIntent(unittest.TestCase):
         door_model.set_new_state("Closing")
 
         # start intent
-        door_model.set_intent("Open")
+        door_model.set_intent(OPEN_INTENT)
 
         # Door should be triggered to stop
         self.assertEqual(mock_driver.trigger_count, 0, "Nothing should be triggerd")
@@ -105,7 +116,7 @@ class TestDoorModelOpenIntent(unittest.TestCase):
         self.assertEqual(mock_driver.trigger_count, 1, "First trigger to stop the door")
 
         # Door should be triggered again to start moving up
-        time.sleep(0.3)
+        time.sleep(0.4)
         self.assertEqual(mock_driver.trigger_count, 2, "Second trigger to start door moving up")
 
         # After moving, the upper switch closes
@@ -113,5 +124,5 @@ class TestDoorModelOpenIntent(unittest.TestCase):
         mock_driver.upper_limit_switch = True
         signal(SIGNAL_UPPER_SWITCH_CHANGED).send(mock_driver)
         self.assertEqual(door_model.state.__class__.__name__, "OpenState")
-        self.assertEqual(door_model.intent.__class__.__name__, "IdleIntent")
+        self.assertEqual(door_model.intent, IDLE_INTENT)
         self.assertEqual(mock_driver.trigger_count, 2, "No additional triggers allowed")

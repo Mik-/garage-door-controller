@@ -29,11 +29,11 @@ class TestState(unittest.TestCase):
 
         state = ConcreteState()
 
-        state.register_action('test1', lambda: "test 1")
-        state.register_action('test2', lambda: "test 2")
+        state.register_action(1, lambda: "test 1")
+        state.register_action(2, lambda: "test 2")
 
-        self.assertEqual(state.get_action('test1')(), "test 1")
-        self.assertEqual(state.get_action('test2')(), "test 2")
+        self.assertEqual(state.get_action(1)(), "test 1")
+        self.assertEqual(state.get_action(2)(), "test 2")
 
-        nope = state.get_action('test3')
+        nope = state.get_action(3)
         self.assertIsNone(nope, "Test 3 should be not defined")
